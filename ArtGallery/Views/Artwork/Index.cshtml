@@ -1,0 +1,61 @@
+ @model IEnumerable<ArtGallery.Models.Artwork>
+@{
+    ViewData["Title"] = "Artworks";
+}
+
+<h2>Artworks</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Artwork</a>
+</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No artworks found.</div>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Available</th>
+                <th>For Sale</th>
+                <th>Featured</th>
+                <th>Created</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @{
+                        var mainImage = item.Images?.FirstOrDefault(img => img.IsPrimary);
+                        if (mainImage != null)
+                        {
+                            <img src="@mainImage.ImagePath" alt="Artwork Image" style="max-width:100px;max-height:100px;" />
+                        }
+                    }
+                </td>
+                <td>@item.Title</td>
+                <td>@item.Description</td>
+                <td>@item.Price.ToString("C")</td>
+                <td>@item.IsAvailable</td>
+                <td>@item.IsForSale</td>
+                <td>@item.IsFeatured</td>
+                <td>@item.CreationDate.ToShortDateString()</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

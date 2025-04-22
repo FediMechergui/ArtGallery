@@ -1,0 +1,147 @@
+@model ArtGallery.Models.Order
+@using ArtGallery.Models
+
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<div class="container">
+    <h1 class="mb-4">Order Details</h1>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Order #@Model.Id</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Order Information</h5>
+                    <dl class="row">
+                        <dt class="col-sm-4">Order Date</dt>
+                        <dd class="col-sm-8">@Model.OrderDate.ToString("g")</dd>
+
+                        <dt class="col-sm-4">Status</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge @(Model.Status switch
+                            {
+                                OrderStatus.Pending => "bg-warning",
+                                OrderStatus.Processing => "bg-info",
+                                OrderStatus.Shipped => "bg-primary",
+                                OrderStatus.Delivered => "bg-success",
+                                OrderStatus.Cancelled => "bg-danger",
+                                _ => "bg-secondary"
+                            })">@Model.Status</span>
+                        </dd>
+
+                        <dt class="col-sm-4">Total Amount</dt>
+                        <dd class="col-sm-8">@Model.TotalAmount.ToString("C")</dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <h5>Shipping Information</h5>
+                    <dl class="row">
+                        <dt class="col-sm-4">Address</dt>
+                        <dd class="col-sm-8">@Model.ShippingAddress</dd>
+
+                        <dt class="col-sm-4">City</dt>
+                        <dd class="col-sm-8">@Model.ShippingCity</dd>
+
+                        <dt class="col-sm-4">State</dt>
+                        <dd class="col-sm-8">@Model.ShippingState</dd>
+
+                        <dt class="col-sm-4">Postal Code</dt>
+                        <dd class="col-sm-8">@Model.ShippingPostalCode</dd>
+
+                        <dt class="col-sm-4">Country</dt>
+                        <dd class="col-sm-8">@Model.ShippingCountry</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h4>Order Items</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Artwork</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.OrderDetails)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-controller="Artwork" asp-action="Details" asp-route-id="@item.ArtworkId">
+                                        @item.Artwork.Title
+                                    </a>
+                                </td>
+                                <td>@item.UnitPrice.ToString("C")</td>
+                                <td>@item.Quantity</td>
+                                <td>@item.Subtotal.ToString("C")</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                            <td><strong>@Model.TotalAmount.ToString("C")</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a asp-action="Index" class="btn btn-secondary">Back to Orders</a>
+        @if (User.IsInRole("Admin") && Model.Status == OrderStatus.Pending)
+        {
+            <form asp-action="UpdateStatus" method="post" class="d-inline">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <input type="hidden" name="status" value="@OrderStatus.Processing" />
+                <button type="submit" class="btn btn-success">Process Order</button>
+            </form>
+        }
+    </div>
+</div>
+
+@functions {
+    string GetStatusBadgeClass(string status)
+    {
+        return status switch
+        {
+            "Pending" => "bg-warning",
+            "Approved" => "bg-success",
+            "Rejected" => "bg-danger",
+            "Completed" => "bg-info",
+            _ => "bg-secondary"
+        };
+    }
+}
+
+@section Styles {
+    <style>
+        .table th {
+            background-color: #f8f9fa;
+        }
+
+        .img-thumbnail {
+            border: none;
+            border-radius: 4px;
+        }
+
+        .badge {
+            padding: 0.5em 0.75em;
+            font-weight: 500;
+        }
+    </style>
+} 

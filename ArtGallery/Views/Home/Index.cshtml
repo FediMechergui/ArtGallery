@@ -1,0 +1,115 @@
+@model ArtGallery.Models.HomeViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="hero-section">
+    <div class="container">
+        <h1>Welcome to ArtGallery</h1>
+        <p>Discover and collect unique artworks from talented artists</p>
+    </div>
+</div>
+
+<div class="container">
+    <h1 class="text-center my-4">Welcome to the Art Gallery</h1>
+
+    <!-- Featured Artworks Section -->
+    <section class="featured-artworks my-5">
+        <h2 class="text-center mb-4">Featured Artworks</h2>
+        <div class="row">
+            @foreach (var artwork in Model.FeaturedArtworks)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        @{
+                            var mainImage = artwork.Images?.FirstOrDefault(img => img.IsPrimary);
+                            if (mainImage != null)
+                            {
+                                <img src="@mainImage.ImagePath" class="card-img-top" alt="@artwork.Title">
+                            }
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title">@artwork.Title</h5>
+                            <p class="card-text">@artwork.Description</p>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    @string.Join(", ", artwork.Categories.Select(c => c.Name))
+                                </small>
+                            </p>
+                            <p class="card-text">
+                                <strong>Price: @artwork.Price.ToString("C")</strong>
+                            </p>
+                            <a asp-controller="Artwork" asp-action="Details" asp-route-id="@artwork.Id" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+
+    <!-- Latest Exhibitions Section -->
+    <section class="latest-exhibitions my-5">
+        <h2 class="text-center mb-4">Latest Exhibitions</h2>
+        <div class="row">
+            @foreach (var exhibition in Model.LatestExhibitions)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        @* Exhibition image logic here, update if you move Exhibition images to a separate model. *@
+                        <div class="card-body">
+                            <h5 class="card-title">@exhibition.Title</h5>
+                            <p class="card-text">@exhibition.Description</p>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    @exhibition.StartDate.ToString("d") - @exhibition.EndDate.ToString("d")
+                                </small>
+                            </p>
+                            <p class="card-text">
+                                <small class="text-muted">@exhibition.Location</small>
+                            </p>
+                            <a asp-controller="Exhibition" asp-action="Details" asp-route-id="@exhibition.Id" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+</div>
+
+@section Styles {
+    <style>
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/images/hero-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .featured-artworks, .upcoming-exhibitions {
+            padding: 50px 0;
+        }
+
+        .card {
+            transition: transform 0.3s;
+            height: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+    </style>
+}

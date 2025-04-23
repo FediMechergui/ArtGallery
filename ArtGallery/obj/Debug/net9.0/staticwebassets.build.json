@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "A/lTHYWGbJEUNEcx43yFSzV+/mSSVwvPo51576LP5uA=",
+  "Hash": "XZJxqe8MyY4BuUUK0wY0sOEH5CS5DU4/ZdFRttWytLY=",
   "Source": "ArtGallery",
   "BasePath": "_content/ArtGallery",
   "Mode": "Default",
@@ -4070,6 +4070,48 @@
       "OriginalItemSpec": "wwwroot\\favicon.ico"
     },
     {
+      "Identity": "C:\\Users\\fedim\\Desktop\\Artist Dotnet\\ArtGallery\\wwwroot\\images\\artworks\\1729ca01-0e10-440e-b217-d6e2c950f176.png",
+      "SourceId": "ArtGallery",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\fedim\\Desktop\\Artist Dotnet\\ArtGallery\\wwwroot\\",
+      "BasePath": "_content/ArtGallery",
+      "RelativePath": "images/artworks/1729ca01-0e10-440e-b217-d6e2c950f176#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "4zvrvly6le",
+      "Integrity": "YJI/Cb6+DpijOJrWxe5ZzExHCoiMdcf1F3HwIjyVn9o=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\artworks\\1729ca01-0e10-440e-b217-d6e2c950f176.png"
+    },
+    {
+      "Identity": "C:\\Users\\fedim\\Desktop\\Artist Dotnet\\ArtGallery\\wwwroot\\images\\artworks\\32c1c0b4-dcd0-4a16-80b2-85b8d9da3af0.png",
+      "SourceId": "ArtGallery",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\fedim\\Desktop\\Artist Dotnet\\ArtGallery\\wwwroot\\",
+      "BasePath": "_content/ArtGallery",
+      "RelativePath": "images/artworks/32c1c0b4-dcd0-4a16-80b2-85b8d9da3af0#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "1hmiknwg61",
+      "Integrity": "RZLyi2AROMhNVAw/PStpTOcvh5z2uLLPnen4Ic7dtik=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\artworks\\32c1c0b4-dcd0-4a16-80b2-85b8d9da3af0.png"
+    },
+    {
       "Identity": "C:\\Users\\fedim\\Desktop\\Artist Dotnet\\ArtGallery\\wwwroot\\images\\artworks\\e31f2086-5dd7-4e2a-ac18-a7b186dafc88.png",
       "SourceId": "ArtGallery",
       "SourceType": "Discovered",
@@ -4089,6 +4131,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\artworks\\e31f2086-5dd7-4e2a-ac18-a7b186dafc88.png"
+    },
+    {
+      "Identity": "C:\\Users\\fedim\\Desktop\\Artist Dotnet\\ArtGallery\\wwwroot\\images\\exhibitions\\d800f7a4-9f44-4a9a-ac72-9747ecaf44b6.jpg",
+      "SourceId": "ArtGallery",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\fedim\\Desktop\\Artist Dotnet\\ArtGallery\\wwwroot\\",
+      "BasePath": "_content/ArtGallery",
+      "RelativePath": "images/exhibitions/d800f7a4-9f44-4a9a-ac72-9747ecaf44b6#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "cu2md41fa8",
+      "Integrity": "5ETmlKd9xsJ/J6aNc+8BfwJ04GPjOOaqADhAx9cyPWI=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\exhibitions\\d800f7a4-9f44-4a9a-ac72-9747ecaf44b6.jpg"
     },
     {
       "Identity": "C:\\Users\\fedim\\Desktop\\Artist Dotnet\\ArtGallery\\wwwroot\\js\\site.js",
@@ -15171,6 +15234,170 @@
       ]
     },
     {
+      "Route": "images/artworks/1729ca01-0e10-440e-b217-d6e2c950f176.4zvrvly6le.png",
+      "AssetFile": "C:\\Users\\fedim\\Desktop\\Artist Dotnet\\ArtGallery\\wwwroot\\images\\artworks\\1729ca01-0e10-440e-b217-d6e2c950f176.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "825358"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"YJI/Cb6+DpijOJrWxe5ZzExHCoiMdcf1F3HwIjyVn9o=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 23 Apr 2025 01:13:49 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "4zvrvly6le"
+        },
+        {
+          "Name": "label",
+          "Value": "images/artworks/1729ca01-0e10-440e-b217-d6e2c950f176.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-YJI/Cb6+DpijOJrWxe5ZzExHCoiMdcf1F3HwIjyVn9o="
+        }
+      ]
+    },
+    {
+      "Route": "images/artworks/1729ca01-0e10-440e-b217-d6e2c950f176.png",
+      "AssetFile": "C:\\Users\\fedim\\Desktop\\Artist Dotnet\\ArtGallery\\wwwroot\\images\\artworks\\1729ca01-0e10-440e-b217-d6e2c950f176.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "825358"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"YJI/Cb6+DpijOJrWxe5ZzExHCoiMdcf1F3HwIjyVn9o=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 23 Apr 2025 01:13:49 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-YJI/Cb6+DpijOJrWxe5ZzExHCoiMdcf1F3HwIjyVn9o="
+        }
+      ]
+    },
+    {
+      "Route": "images/artworks/32c1c0b4-dcd0-4a16-80b2-85b8d9da3af0.1hmiknwg61.png",
+      "AssetFile": "C:\\Users\\fedim\\Desktop\\Artist Dotnet\\ArtGallery\\wwwroot\\images\\artworks\\32c1c0b4-dcd0-4a16-80b2-85b8d9da3af0.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "168921"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"RZLyi2AROMhNVAw/PStpTOcvh5z2uLLPnen4Ic7dtik=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 23 Apr 2025 01:14:20 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "1hmiknwg61"
+        },
+        {
+          "Name": "label",
+          "Value": "images/artworks/32c1c0b4-dcd0-4a16-80b2-85b8d9da3af0.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-RZLyi2AROMhNVAw/PStpTOcvh5z2uLLPnen4Ic7dtik="
+        }
+      ]
+    },
+    {
+      "Route": "images/artworks/32c1c0b4-dcd0-4a16-80b2-85b8d9da3af0.png",
+      "AssetFile": "C:\\Users\\fedim\\Desktop\\Artist Dotnet\\ArtGallery\\wwwroot\\images\\artworks\\32c1c0b4-dcd0-4a16-80b2-85b8d9da3af0.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "168921"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"RZLyi2AROMhNVAw/PStpTOcvh5z2uLLPnen4Ic7dtik=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 23 Apr 2025 01:14:20 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-RZLyi2AROMhNVAw/PStpTOcvh5z2uLLPnen4Ic7dtik="
+        }
+      ]
+    },
+    {
       "Route": "images/artworks/e31f2086-5dd7-4e2a-ac18-a7b186dafc88.bnndhuqzpn.png",
       "AssetFile": "C:\\Users\\fedim\\Desktop\\Artist Dotnet\\ArtGallery\\wwwroot\\images\\artworks\\e31f2086-5dd7-4e2a-ac18-a7b186dafc88.png",
       "Selectors": [],
@@ -15249,6 +15476,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-9wGMSZ1osJQ5/kdwHTB5WcSiV4oumFNBo0JAtGcFSbg="
+        }
+      ]
+    },
+    {
+      "Route": "images/exhibitions/d800f7a4-9f44-4a9a-ac72-9747ecaf44b6.cu2md41fa8.jpg",
+      "AssetFile": "C:\\Users\\fedim\\Desktop\\Artist Dotnet\\ArtGallery\\wwwroot\\images\\exhibitions\\d800f7a4-9f44-4a9a-ac72-9747ecaf44b6.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "30319"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"5ETmlKd9xsJ/J6aNc+8BfwJ04GPjOOaqADhAx9cyPWI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 23 Apr 2025 01:31:20 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "cu2md41fa8"
+        },
+        {
+          "Name": "label",
+          "Value": "images/exhibitions/d800f7a4-9f44-4a9a-ac72-9747ecaf44b6.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-5ETmlKd9xsJ/J6aNc+8BfwJ04GPjOOaqADhAx9cyPWI="
+        }
+      ]
+    },
+    {
+      "Route": "images/exhibitions/d800f7a4-9f44-4a9a-ac72-9747ecaf44b6.jpg",
+      "AssetFile": "C:\\Users\\fedim\\Desktop\\Artist Dotnet\\ArtGallery\\wwwroot\\images\\exhibitions\\d800f7a4-9f44-4a9a-ac72-9747ecaf44b6.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "30319"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"5ETmlKd9xsJ/J6aNc+8BfwJ04GPjOOaqADhAx9cyPWI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 23 Apr 2025 01:31:20 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-5ETmlKd9xsJ/J6aNc+8BfwJ04GPjOOaqADhAx9cyPWI="
         }
       ]
     },

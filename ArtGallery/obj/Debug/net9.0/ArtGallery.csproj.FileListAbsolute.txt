@@ -409,3 +409,4 @@ C:\Users\fedim\Desktop\Artist Dotnet\ArtGallery\bin\Debug\net9.0\tr\Microsoft.Co
 C:\Users\fedim\Desktop\Artist Dotnet\ArtGallery\bin\Debug\net9.0\zh-Hans\Microsoft.CodeAnalysis.Scripting.resources.dll
 C:\Users\fedim\Desktop\Artist Dotnet\ArtGallery\bin\Debug\net9.0\zh-Hant\Microsoft.CodeAnalysis.Scripting.resources.dll
 C:\Users\fedim\Desktop\Artist Dotnet\ArtGallery\bin\Debug\net9.0\libman.json
+C:\Users\fedim\Desktop\Artist Dotnet\ArtGallery\obj\Debug\net9.0\ArtGallery.sourcelink.json

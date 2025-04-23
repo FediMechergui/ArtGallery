@@ -54,10 +54,29 @@ namespace ArtGallery.Controllers
         // POST: Exhibition/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,StartDate,EndDate,Location")] Exhibition exhibition)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,StartDate,EndDate,Location")] Exhibition exhibition, IFormFile imageFile)
         {
+            if (imageFile == null || imageFile.Length == 0)
+            {
+                ModelState.AddModelError("ImagePath", "An exhibition image is required.");
+            }
+
             if (ModelState.IsValid)
             {
+                // Save uploaded image
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/exhibitions");
+                    if (!Directory.Exists(uploadsDir))
+                        Directory.CreateDirectory(uploadsDir);
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+                    var filePath = Path.Combine(uploadsDir, fileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await imageFile.CopyToAsync(stream);
+                    }
+                    exhibition.ImagePath = "/images/exhibitions/" + fileName;
+                }
                 _context.Add(exhibition);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -84,7 +103,7 @@ namespace ArtGallery.Controllers
         // POST: Exhibition/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,StartDate,EndDate,Location")] Exhibition exhibition)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,StartDate,EndDate,Location")] Exhibition exhibition, IFormFile imageFile)
         {
             if (id != exhibition.Id)
             {
@@ -95,7 +114,33 @@ namespace ArtGallery.Controllers
             {
                 try
                 {
-                    _context.Update(exhibition);
+                    var existingExhibition = await _context.Exhibitions.FindAsync(id);
+                    if (existingExhibition == null)
+                        return NotFound();
+
+                    // Update fields
+                    existingExhibition.Title = exhibition.Title;
+                    existingExhibition.Description = exhibition.Description;
+                    existingExhibition.StartDate = exhibition.StartDate;
+                    existingExhibition.EndDate = exhibition.EndDate;
+                    existingExhibition.Location = exhibition.Location;
+
+                    // Handle image change
+                    if (imageFile != null && imageFile.Length > 0)
+                    {
+                        var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/exhibitions");
+                        if (!Directory.Exists(uploadsDir))
+                            Directory.CreateDirectory(uploadsDir);
+                        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+                        var filePath = Path.Combine(uploadsDir, fileName);
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await imageFile.CopyToAsync(stream);
+                        }
+                        existingExhibition.ImagePath = "/images/exhibitions/" + fileName;
+                    }
+
+                    _context.Update(existingExhibition);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

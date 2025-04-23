@@ -33,10 +33,12 @@ namespace ArtGallery.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create([Bind("Id,Title,Url,Description")] ExternalLink externalLink)
+        public async Task<IActionResult> Create([Bind("Id,Title,Url,Description,Type,IsActive,SortOrder")] ExternalLink externalLink)
         {
             if (ModelState.IsValid)
             {
+                externalLink.CreatedAt = DateTime.Now;
+                externalLink.UpdatedAt = null;
                 _context.Add(externalLink);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -65,7 +67,7 @@ namespace ArtGallery.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Url,Description")] ExternalLink externalLink)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Url,Description,Type,IsActive,SortOrder")] ExternalLink externalLink)
         {
             if (id != externalLink.Id)
             {
@@ -76,6 +78,12 @@ namespace ArtGallery.Controllers
             {
                 try
                 {
+                    // Get the original entity
+                    var existing = await _context.ExternalLinks.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
+                    if (existing == null)
+                        return NotFound();
+                    externalLink.CreatedAt = existing.CreatedAt; // preserve original
+                    externalLink.UpdatedAt = DateTime.Now;
                     _context.Update(externalLink);
                     await _context.SaveChangesAsync();
                 }

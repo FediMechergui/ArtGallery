@@ -13,8 +13,20 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
+      "Id": "C:\\Users\\fedim\\Desktop\\Artist Dotnet\\ArtGallery\\wwwroot\\images\\artworks\\1729ca01-0e10-440e-b217-d6e2c950f176.png",
+      "PackagePath": "staticwebassets\\images\\artworks\\1729ca01-0e10-440e-b217-d6e2c950f176.png"
+    },
+    {
+      "Id": "C:\\Users\\fedim\\Desktop\\Artist Dotnet\\ArtGallery\\wwwroot\\images\\artworks\\32c1c0b4-dcd0-4a16-80b2-85b8d9da3af0.png",
+      "PackagePath": "staticwebassets\\images\\artworks\\32c1c0b4-dcd0-4a16-80b2-85b8d9da3af0.png"
+    },
+    {
       "Id": "C:\\Users\\fedim\\Desktop\\Artist Dotnet\\ArtGallery\\wwwroot\\images\\artworks\\e31f2086-5dd7-4e2a-ac18-a7b186dafc88.png",
       "PackagePath": "staticwebassets\\images\\artworks\\e31f2086-5dd7-4e2a-ac18-a7b186dafc88.png"
+    },
+    {
+      "Id": "C:\\Users\\fedim\\Desktop\\Artist Dotnet\\ArtGallery\\wwwroot\\images\\exhibitions\\d800f7a4-9f44-4a9a-ac72-9747ecaf44b6.jpg",
+      "PackagePath": "staticwebassets\\images\\exhibitions\\d800f7a4-9f44-4a9a-ac72-9747ecaf44b6.jpg"
     },
     {
       "Id": "C:\\Users\\fedim\\Desktop\\Artist Dotnet\\ArtGallery\\wwwroot\\js\\site.js",

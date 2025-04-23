@@ -29,8 +29,7 @@ namespace ArtGallery.Models
         [Required]
         public DateTime EndDate { get; set; }
 
-        [Required]
-        public required string ImagePath { get; set; }
+        public string? ImagePath { get; set; }
 
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.Now;

@@ -1,4 +1,108 @@
  @model IEnumerable<ArtGallery.Models.Artwork>
+@using ArtGallery.Models
+@{
+    ViewData["Title"] = "Artworks";
+    var categories = ViewBag.Categories as List<Category>;
+    var selectedCategory = Context.Request.Query["category"].ToString();
+    var showForSale = Context.Request.Query["forSale"].ToString();
+}
+<div class="container mt-4">
+    <h2 class="mb-4">Artworks</h2>
+    <form method="get" class="row g-3 mb-4 align-items-end">
+        <div class="col-md-4">
+            <label for="category" class="form-label">Category</label>
+            <select name="category" id="category" class="form-select">
+                <option value="">All Categories</option>
+                @if (categories != null)
+                {
+                    foreach (var cat in categories)
+                    {
+                        if (selectedCategory == cat.Id.ToString())
+                        {
+                            <option value="@cat.Id" selected>@cat.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@cat.Id">@cat.Name</option>
+                        }
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="forSale" class="form-label">For Sale</label>
+            <select name="forSale" id="forSale" class="form-select">
+                <option value="">All</option>
+                @* For Sale filter options with Razor-compliant conditional selection *@
+@if (showForSale == "true")
+{
+    <option value="true" selected>For Sale</option>
+}
+else
+{
+    <option value="true">For Sale</option>
+}
+@if (showForSale == "false")
+{
+    <option value="false" selected>Not For Sale</option>
+}
+else
+{
+    <option value="false">Not For Sale</option>
+}
+            </select>
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+    </form>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    @{
+                        var mainImage = item.Images?.FirstOrDefault(img => img.IsPrimary) ?? item.Images?.FirstOrDefault();
+                        if (mainImage != null)
+                        {
+                            <img src="@mainImage.ImagePath" alt="Artwork Image" class="card-img-top" style="height:220px;object-fit:cover;" />
+                        }
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Title</h5>
+                        <p class="card-text">@item.Description</p>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                @string.Join(", ", item.Categories.Select(c => c.Name))
+                            </small>
+                        </p>
+                        <p class="card-text"><strong>Price: @item.Price.ToString("C")</strong></p>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">Details</a>
+                        @if (User.Identity.IsAuthenticated && !User.IsInRole("Admin") && item.IsAvailable && item.IsForSale)
+                        {
+                            <form asp-controller="ShoppingCart" asp-action="AddToCart" method="post" class="d-inline ms-2">
+                                <input type="hidden" name="artworkId" value="@item.Id" />
+                                <button type="submit" class="btn btn-success btn-sm">Buy</button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info mt-4">No artworks found.</div>
+    }
+</div>
+@section Styles {
+    <style>
+        .card-img-top { height: 220px; object-fit: cover; }
+        .card { transition: box-shadow 0.2s; }
+        .card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.12); }
+        .btn-outline-primary { margin-right: 0.5rem; }
+    </style>
+}
 @{
     ViewData["Title"] = "Artworks";
 }

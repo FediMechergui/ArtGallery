@@ -30,6 +30,22 @@ public class HomeController : Controller
                 .Take(6)
                 .ToListAsync(),
 
+            ForSaleArtworks = await _context.Artworks
+                .Include(a => a.Categories)
+                .Include(a => a.Images)
+                .Where(a => a.IsForSale && a.IsAvailable)
+                .OrderByDescending(a => a.CreatedAt)
+                .Take(6)
+                .ToListAsync(),
+
+            AvailableArtworks = await _context.Artworks
+                .Include(a => a.Categories)
+                .Include(a => a.Images)
+                .Where(a => a.IsAvailable)
+                .OrderByDescending(a => a.CreatedAt)
+                .Take(6)
+                .ToListAsync(),
+
             LatestExhibitions = await _context.Exhibitions
                 .Include(e => e.ExhibitionArtworks)
                 .ThenInclude(ea => ea.Artwork)

@@ -1,10 +1,11 @@
 @model Exhibition
 @{
-    ViewData["Title"] = "Create Exhibition";
+    ViewData["Title"] = "Edit Exhibition";
 }
-<h2>Create Exhibition</h2>
-<form asp-action="Create" method="post" enctype="multipart/form-data" class="mt-4">
+<h2>Edit Exhibition</h2>
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
     <div asp-validation-summary="All" class="text-danger mb-3"></div>
+    <input type="hidden" asp-for="Id" />
     <div class="mb-3">
         <label asp-for="Title" class="form-label"></label>
         <input asp-for="Title" class="form-control" />
@@ -31,9 +32,25 @@
         <span asp-validation-for="Location" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label for="imageFile" class="form-label">Exhibition Image</label>
+        <label>Current Image</label><br />
+        @if (!string.IsNullOrEmpty(Model.ImagePath))
+        {
+            <img src="@Model.ImagePath" alt="Current Image" style="max-width:200px;max-height:150px;" class="mb-2" />
+        }
+    </div>
+    <div class="mb-3">
+        <label for="imageFile" class="form-label">Change Image</label>
         <input type="file" name="imageFile" id="imageFile" class="form-control" accept="image/*" />
         <span asp-validation-for="ImagePath" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-primary">Create</button>
+    <button type="submit" class="btn btn-success">Save Changes</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
 </form>
+@section Styles {
+    <style>
+        h2 { margin-bottom: 1.5rem; }
+        img { border-radius: 8px; border: 1px solid #eee; }
+        .form-label { font-weight: 500; }
+        .btn { min-width: 120px; }
+    </style>
+}

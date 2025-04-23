@@ -80,12 +80,32 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXhoaWJpdGlvblxDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/fedim/Desktop/Artist Dotnet/ArtGallery/Views/Exhibition/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXhoaWJpdGlvblxEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/fedim/Desktop/Artist Dotnet/ArtGallery/Views/Exhibition/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXhoaWJpdGlvblxEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/fedim/Desktop/Artist Dotnet/ArtGallery/Views/Exhibition/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXhoaWJpdGlvblxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/fedim/Desktop/Artist Dotnet/ArtGallery/Views/Exhibition/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXhoaWJpdGlvblxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/fedim/Desktop/Artist Dotnet/ArtGallery/Views/ExternalLink/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXh0ZXJuYWxMaW5rXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/fedim/Desktop/Artist Dotnet/ArtGallery/Views/ExternalLink/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXh0ZXJuYWxMaW5rXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/fedim/Desktop/Artist Dotnet/ArtGallery/Views/ExternalLink/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXh0ZXJuYWxMaW5rXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/fedim/Desktop/Artist Dotnet/ArtGallery/Views/ExternalLink/Index.cshtml]

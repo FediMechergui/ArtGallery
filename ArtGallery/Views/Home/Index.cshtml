@@ -17,8 +17,137 @@
     <!-- Featured Artworks Section -->
     <section class="featured-artworks my-5">
         <h2 class="text-center mb-4">Featured Artworks</h2>
+        @if (Model.FeaturedArtworks.Count() > 1)
+        {
+            <div id="featuredArtworksCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @{
+                        var idx = 0;
+                        foreach (var artwork in Model.FeaturedArtworks)
+                        {
+                            var mainImage = artwork.Images?.FirstOrDefault(img => img.IsPrimary) ?? artwork.Images?.FirstOrDefault();
+                            <div class="carousel-item @(idx == 0 ? "active" : "")">
+                                <div class="d-flex justify-content-center">
+                                    <div class="card" style="width: 28rem;">
+                                        @if (mainImage != null)
+                                        {
+                                            <img src="@mainImage.ImagePath" class="card-img-top" alt="@artwork.Title" style="height:320px;object-fit:cover;">
+                                        }
+                                        <div class="card-body">
+                                            <h5 class="card-title">@artwork.Title</h5>
+                                            <p class="card-text">@artwork.Description</p>
+                                            <p class="card-text">
+                                                <small class="text-muted">
+                                                    @string.Join(", ", (artwork.Categories ?? new List<Category>()).Select(c => c.Name))
+                                                </small>
+                                            </p>
+                                            <p class="card-text">
+                                                <strong>Price: @artwork.Price.ToString("C")</strong>
+                                            </p>
+                                            <a asp-controller="Artwork" asp-action="Details" asp-route-id="@artwork.Id" class="btn btn-primary">View Details</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            idx++;
+                        }
+                    }
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#featuredArtworksCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#featuredArtworksCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        }
+        else if (Model.FeaturedArtworks.Count() == 1)
+        {
+            var artwork = Model.FeaturedArtworks.First();
+            var mainImage = artwork.Images?.FirstOrDefault(img => img.IsPrimary) ?? artwork.Images?.FirstOrDefault();
+            <div class="d-flex justify-content-center">
+                <div class="card" style="width: 28rem;">
+                    @if (mainImage != null)
+                    {
+                        <img src="@mainImage.ImagePath" class="card-img-top" alt="@artwork.Title" style="height:320px;object-fit:cover;">
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@artwork.Title</h5>
+                        <p class="card-text">@artwork.Description</p>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                @string.Join(", ", (artwork.Categories ?? new List<Category>()).Select(c => c.Name))
+                            </small>
+                        </p>
+                        <p class="card-text">
+                            <strong>Price: @artwork.Price.ToString("C")</strong>
+                        </p>
+                        <a asp-controller="Artwork" asp-action="Details" asp-route-id="@artwork.Id" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info text-center">No featured artworks found.</div>
+        }
+    </section>
+    @section Scripts {
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    }
+
+    <!-- For Sale Artworks Section -->
+    <section class="for-sale-artworks my-5">
+        <h2 class="text-center mb-4">For Sale Artworks</h2>
         <div class="row">
-            @foreach (var artwork in Model.FeaturedArtworks)
+            @foreach (var artwork in Model.ForSaleArtworks.Where(a => a.IsForSale))
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        @{
+                            var mainImage = artwork.Images?.FirstOrDefault(img => img.IsPrimary) ?? artwork.Images?.FirstOrDefault();
+                            if (mainImage != null)
+                            {
+                                <img src="@mainImage.ImagePath" class="card-img-top" alt="@artwork.Title">
+                            }
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title">@artwork.Title</h5>
+                            <p class="card-text">@artwork.Description</p>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    @string.Join(", ", (artwork.Categories ?? new List<Category>()).Select(c => c.Name))
+                                </small>
+                            </p>
+                            <p class="card-text">
+                                <strong>Price: @artwork.Price.ToString("C")</strong>
+                            </p>
+                            <a asp-controller="Artwork" asp-action="Details" asp-route-id="@artwork.Id" class="btn btn-outline-primary btn-sm">Details</a>
+                            @if (User.Identity.IsAuthenticated && !User.IsInRole("Admin") && artwork.IsAvailable && artwork.IsForSale)
+                            {
+                                <form asp-controller="ShoppingCart" asp-action="AddToCart" method="post" class="d-inline ms-2">
+                                    <input type="hidden" name="artworkId" value="@artwork.Id" />
+                                    <button type="submit" class="btn btn-success btn-sm">Buy</button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        @if (!Model.ForSaleArtworks.Any(a => a.IsForSale))
+        {
+            <div class="alert alert-info mt-4">No artworks for sale at the moment.</div>
+        }
+    </section>
+
+    <!-- Available Artworks Section -->
+    <section class="available-artworks my-5">
+        <h2 class="text-center mb-4">Available Artworks</h2>
+        <div class="row">
+            @foreach (var artwork in Model.AvailableArtworks)
             {
                 <div class="col-md-4 mb-4">
                     <div class="card h-100">
@@ -34,7 +163,7 @@
                             <p class="card-text">@artwork.Description</p>
                             <p class="card-text">
                                 <small class="text-muted">
-                                    @string.Join(", ", artwork.Categories.Select(c => c.Name))
+                                    @string.Join(", ", (artwork.Categories ?? new List<Category>()).Select(c => c.Name))
                                 </small>
                             </p>
                             <p class="card-text">

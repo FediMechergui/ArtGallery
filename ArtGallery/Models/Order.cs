@@ -7,6 +7,8 @@ namespace ArtGallery.Models
     public enum OrderStatus
     {
         Pending,
+        Approved,
+        Declined,
         Processing,
         Shipped,
         Delivered,

@@ -15,14 +15,26 @@ namespace ArtGallery.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? category, bool? forSale)
         {
-            var artworks = await _context.Artworks
+            var artworksQuery = _context.Artworks
                 .Include(a => a.Categories)
                 .Include(a => a.Images)
                 .OrderByDescending(a => a.CreatedAt)
-                .ToListAsync();
+                .AsQueryable();
 
+            if (category.HasValue)
+            {
+                artworksQuery = artworksQuery.Where(a => a.Categories.Any(c => c.Id == category));
+            }
+            if (forSale.HasValue)
+            {
+                artworksQuery = artworksQuery.Where(a => a.IsForSale == forSale);
+            }
+
+            var artworks = await artworksQuery.ToListAsync();
+            var categories = await _context.Categories.OrderBy(c => c.Name).ToListAsync();
+            ViewBag.Categories = categories;
             return View(artworks);
         }
 

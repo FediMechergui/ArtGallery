@@ -101,7 +101,7 @@ namespace ArtGallery.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Checkout()
+        public async Task<IActionResult> Checkout(int? artworkId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _context.Users.FindAsync(userId);
@@ -110,10 +110,34 @@ namespace ArtGallery.Controllers
                 return NotFound();
             }
 
-            var cartItems = await _context.ShoppingCarts
-                .Include(sc => sc.Artwork)
-                .Where(sc => sc.UserId == userId)
-                .ToListAsync();
+            List<ShoppingCart> cartItems;
+            if (artworkId.HasValue)
+            {
+                var artwork = await _context.Artworks.FindAsync(artworkId.Value);
+                if (artwork == null || !artwork.IsAvailable || !artwork.IsForSale)
+                {
+                    return NotFound();
+                }
+                cartItems = new List<ShoppingCart>
+                {
+                    new ShoppingCart
+                    {
+                        UserId = userId!,
+                        User = user!,
+                        ArtworkId = artwork.Id,
+                        Artwork = artwork!,
+                        Quantity = 1,
+                        UnitPrice = artwork.Price
+                    }
+                };
+            }
+            else
+            {
+                cartItems = await _context.ShoppingCarts
+                    .Include(sc => sc.Artwork)
+                    .Where(sc => sc.UserId == userId)
+                    .ToListAsync();
+            }
 
             if (!cartItems.Any())
             {
@@ -152,10 +176,13 @@ namespace ArtGallery.Controllers
             order.OrderDetails = orderDetails;
             await _context.SaveChangesAsync();
 
-            _context.ShoppingCarts.RemoveRange(cartItems);
-            await _context.SaveChangesAsync();
+            if (!artworkId.HasValue)
+            {
+                _context.ShoppingCarts.RemoveRange(cartItems);
+                await _context.SaveChangesAsync();
+            }
 
             return RedirectToAction("Details", "Order", new { id = order.Id });
         }
     }
-} 
+}

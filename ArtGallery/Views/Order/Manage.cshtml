@@ -1,16 +1,16 @@
 @model IEnumerable<ArtGallery.Models.Order>
 
 @{
-    ViewData["Title"] = "Manage Orders";
+    ViewData["Title"] = "Gérer les commandes";
 }
 
 <div class="container">
-    <h1 class="mb-4">Manage Orders</h1>
+    <h1 class="mb-4">Gérer les commandes</h1>
 
     @if (!Model.Any())
     {
         <div class="alert alert-info">
-            There are no orders to display.
+            Aucune commande à afficher.
         </div>
     }
     else
@@ -48,7 +48,7 @@
                             <td>@order.TotalAmount.ToString("C")</td>
                             <td>
                                 <div class="btn-group">
-                                    <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-primary btn-sm">View Details</a>
+                                    <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-primary btn-sm">Voir les détails</a>
                                     @if (order.Status == OrderStatus.Pending)
                                     {
                                         <form asp-action="UpdateStatus" method="post" class="d-inline">
@@ -68,7 +68,7 @@
 </div>
 
 @functions {
-    string GetStatusBadgeClass(string status)
+    string GetStatutBadgeClass(string status)
     {
         return status switch
         {

@@ -1,6 +1,6 @@
 @model ArtGallery.Models.Artwork
 @{
-    ViewData["Title"] = "Artwork Details";
+    ViewData["Title"] = "Voir les détails de l'œuvre";
     var mainImage = Model.Images?.FirstOrDefault(img => img.IsPrimary) ?? Model.Images?.FirstOrDefault();
 }
 <div class="container mt-4">
@@ -8,47 +8,47 @@
         <div class="col-md-6">
             @if (mainImage != null)
             {
-                <img src="@mainImage.ImagePath" alt="Artwork Image" class="img-fluid rounded mb-3" style="max-height:350px;object-fit:contain;" />
+                <img src="@mainImage.ImagePath" alt="Image de l'œuvre" class="img-fluid rounded mb-3" style="max-height:350px;object-fit:contain;" />
             }
             @if (Model.Images != null && Model.Images.Count > 1)
             {
                 <div class="d-flex flex-wrap gap-2">
                     @foreach (var img in Model.Images)
                     {
-                        <img src="@img.ImagePath" alt="Artwork Image" class="img-thumbnail" style="width:80px;height:80px;object-fit:cover;" />
+                        <img src="@img.ImagePath" alt="Image de l'œuvre" class="img-thumbnail" style="width:80px;height:80px;object-fit:cover;" />
                     }
                 </div>
             }
         </div>
         <div class="col-md-6">
             <h2>@Model.Title</h2>
-            <p class="text-muted">Created: @Model.CreationDate.ToShortDateString()</p>
+            <p class="text-muted">Créé le : @Model.CreationDate.ToShortDateString()</p>
             <h4 class="text-success">@Model.Price.ToString("C")</h4>
             <p>@Model.Description</p>
             <dl class="row">
-                <dt class="col-sm-4">Available</dt>
-                <dd class="col-sm-8">@(Model.IsAvailable ? "Yes" : "No")</dd>
-                <dt class="col-sm-4">For Sale</dt>
-                <dd class="col-sm-8">@(Model.IsForSale ? "Yes" : "No")</dd>
-                <dt class="col-sm-4">Featured</dt>
-                <dd class="col-sm-8">@(Model.IsFeatured ? "Yes" : "No")</dd>
+                <dt class="col-sm-4">Disponible</dt>
+                <dd class="col-sm-8">@(Model.IsAvailable ? "Oui" : "Non")</dd>
+                <dt class="col-sm-4">En vente</dt>
+                <dd class="col-sm-8">@(Model.IsForSale ? "Oui" : "Non")</dd>
+                <dt class="col-sm-4">En vedette</dt>
+                <dd class="col-sm-8">@(Model.IsFeatured ? "Oui" : "Non")</dd>
                 <dt class="col-sm-4">Technique</dt>
                 <dd class="col-sm-8">@Model.TechniqueUsed</dd>
-                <dt class="col-sm-4">Size</dt>
+                <dt class="col-sm-4">Taille</dt>
                 <dd class="col-sm-8">@Model.Size</dd>
             </dl>
             @if (User.Identity.IsAuthenticated && !User.IsInRole("Admin") && Model.IsAvailable && Model.IsForSale)
             {
                 <form asp-controller="ShoppingCart" asp-action="AddToCart" method="post" class="d-inline">
                     <input type="hidden" name="artworkId" value="@Model.Id" />
-                    <button type="submit" class="btn btn-success">Add to Cart</button>
+                    <button type="submit" class="btn btn-success">Ajouter au panier</button>
                 </form>
                 <form asp-controller="ShoppingCart" asp-action="Checkout" method="post" class="d-inline ms-2">
                     <input type="hidden" name="artworkId" value="@Model.Id" />
-                    <button type="submit" class="btn btn-primary">Buy Now</button>
+                    <button type="submit" class="btn btn-primary">Acheter maintenant</button>
                 </form>
             }
-            <a asp-action="Index" class="btn btn-secondary mt-3">Back to Gallery</a>
+            <a asp-action="Index" class="btn btn-secondary mt-3">Retour à la galerie</a>
         </div>
     </div>
 </div>

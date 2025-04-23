@@ -1,44 +1,44 @@
 @model ArtGallery.Models.ExternalLink
 @{
-    ViewData["Title"] = "Delete External Link";
+    ViewData["Title"] = "Supprimer le lien externe";
 }
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
             <div class="card shadow-sm">
                 <div class="card-header bg-danger text-white">
-                    <h3 class="mb-0"><i class="bi bi-trash"></i> Delete External Link</h3>
+                    <h3 class="mb-0"><i class="bi bi-trash"></i> Supprimer le lien externe</h3>
                 </div>
                 <div class="card-body">
                     <form asp-action="Delete" method="post">
                         <input type="hidden" asp-for="Id" />
                         <div class="mb-3">
-                            <label asp-for="Title" class="form-label"></label>
+                            <label asp-for="Title" class="form-label">Titre</label>
                             <input asp-for="Title" class="form-control" readonly />
                         </div>
                         <div class="mb-3">
-                            <label asp-for="Url" class="form-label"></label>
+                            <label asp-for="Url" class="form-label">URL</label>
                             <input asp-for="Url" class="form-control" readonly />
                         </div>
                         <div class="mb-3">
-                            <label asp-for="Description" class="form-label"></label>
+                            <label asp-for="Description" class="form-label">Description</label>
                             <input asp-for="Description" class="form-control" readonly />
                         </div>
                         <div class="mb-3">
-                            <label asp-for="Type" class="form-label"></label>
+                            <label asp-for="Type" class="form-label">Type</label>
                             <input asp-for="Type" class="form-control" readonly />
                         </div>
                         <div class="mb-3">
-                            <label asp-for="IsActive" class="form-label"></label>
+                            <label asp-for="IsActive" class="form-label">Actif</label>
                             <input asp-for="IsActive" class="form-control" readonly />
                         </div>
                         <div class="mb-3">
-                            <label asp-for="SortOrder" class="form-label"></label>
+                            <label asp-for="SortOrder" class="form-label">Ordre de tri</label>
                             <input asp-for="SortOrder" class="form-control" readonly />
                         </div>
-                        <div class="alert alert-warning">Are you sure you want to delete this link? This action cannot be undone.</div>
-                        <button type="submit" class="btn btn-danger w-100"><i class="bi bi-trash"></i> Delete</button>
-                        <a asp-action="Index" class="btn btn-secondary w-100 mt-2">Cancel</a>
+                        <div class="alert alert-warning">Êtes-vous sûr de vouloir supprimer ce lien ? Cette action est irréversible.</div>
+                        <button type="submit" class="btn btn-danger w-100"><i class="bi bi-trash"></i> Supprimer</button>
+                        <a asp-action="Index" class="btn btn-secondary w-100 mt-2">Annuler</a>
                     </form>
                 </div>
             </div>

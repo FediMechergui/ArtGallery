@@ -10,11 +10,17 @@ namespace ArtGallery.Controllers
     {
         private readonly ApplicationDbContext _context;
 
+                // Constructeur : injection du contexte de base de données
         public ArtworkController(ApplicationDbContext context)
         {
             _context = context;
         }
 
+                /// <summary>
+        /// Affiche la liste des œuvres d'art, avec possibilité de filtrer par catégorie ou disponibilité à la vente.
+        /// </summary>
+        /// <param name="category">Identifiant de la catégorie (optionnel)</param>
+        /// <param name="forSale">Filtre pour les œuvres en vente (optionnel)</param>
         public async Task<IActionResult> Index(int? category, bool? forSale)
         {
             var artworksQuery = _context.Artworks
@@ -38,6 +44,10 @@ namespace ArtGallery.Controllers
             return View(artworks);
         }
 
+                /// <summary>
+        /// Affiche les détails d'une œuvre d'art spécifique.
+        /// </summary>
+        /// <param name="id">Identifiant de l'œuvre</param>
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -58,6 +68,9 @@ namespace ArtGallery.Controllers
             return View(artwork);
         }
 
+                /// <summary>
+        /// Affiche le formulaire de création d'une nouvelle œuvre (réservé à l'admin).
+        /// </summary>
         [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
@@ -65,6 +78,13 @@ namespace ArtGallery.Controllers
             return View();
         }
 
+                /// <summary>
+        /// Traite la soumission du formulaire de création d'une œuvre (admin).
+        /// Associe les catégories sélectionnées et gère l'upload d'image principale.
+        /// </summary>
+        /// <param name="artwork">Objet Artwork à créer</param>
+        /// <param name="selectedCategories">Catégories sélectionnées</param>
+        /// <param name="imageFile">Fichier image téléchargé</param>
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -106,6 +126,10 @@ namespace ArtGallery.Controllers
             return View(artwork);
         }
 
+                /// <summary>
+        /// Affiche le formulaire d'édition d'une œuvre existante (admin).
+        /// </summary>
+        /// <param name="id">Identifiant de l'œuvre à éditer</param>
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -127,6 +151,13 @@ namespace ArtGallery.Controllers
             return View(artwork);
         }
 
+                /// <summary>
+        /// Traite la soumission du formulaire d'édition d'une œuvre (admin).
+        /// Met à jour les champs et les catégories associées.
+        /// </summary>
+        /// <param name="id">Identifiant de l'œuvre</param>
+        /// <param name="artwork">Objet Artwork modifié</param>
+        /// <param name="selectedCategories">Catégories sélectionnées</param>
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -191,6 +222,10 @@ namespace ArtGallery.Controllers
             return View(artwork);
         }
 
+                /// <summary>
+        /// Affiche la page de confirmation de suppression d'une œuvre (admin).
+        /// </summary>
+        /// <param name="id">Identifiant de l'œuvre à supprimer</param>
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -211,6 +246,10 @@ namespace ArtGallery.Controllers
             return View(artwork);
         }
 
+                /// <summary>
+        /// Traite la suppression définitive d'une œuvre (admin).
+        /// </summary>
+        /// <param name="id">Identifiant de l'œuvre à supprimer</param>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
@@ -227,6 +266,11 @@ namespace ArtGallery.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+                /// <summary>
+        /// Vérifie si une œuvre existe dans la base de données.
+        /// </summary>
+        /// <param name="id">Identifiant de l'œuvre</param>
+        /// <returns>Vrai si l'œuvre existe, faux sinon</returns>
         private bool ArtworkExists(int id)
         {
             return _context.Artworks.Any(e => e.Id == id);

@@ -4,24 +4,37 @@ using ArtGallery.Models;
 
 namespace ArtGallery.Data
 {
+    // Contexte de base de données principal de l'application, gère l'accès aux entités.
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        // Constructeur du contexte, prend les options de configuration.
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
 
+        // Table des œuvres d'art.
         public DbSet<Artwork> Artworks { get; set; }
+        // Table des catégories.
         public DbSet<Category> Categories { get; set; }
+        // Table des commandes.
         public DbSet<Order> Orders { get; set; }
+        // Table des détails de commande.
         public DbSet<OrderDetail> OrderDetails { get; set; }
+        // Table des paniers d'achat.
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        // Table des images d'œuvres.
         public DbSet<ArtworkImage> ArtworkImages { get; set; }
+        // Table des expositions.
         public DbSet<Exhibition> Exhibitions { get; set; }
+        // Table des relations exposition-œuvre.
         public DbSet<ExhibitionArtwork> ExhibitionArtworks { get; set; }
+        // Table des entrées du livre d'or.
         public DbSet<GoldenBookEntry> GoldenBookEntries { get; set; }
+        // Table des liens externes.
         public DbSet<ExternalLink> ExternalLinks { get; set; }
 
+        // Configure les relations entre les entités et les comportements de la base de données.
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

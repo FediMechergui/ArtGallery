@@ -1,13 +1,13 @@
  @model IEnumerable<ArtGallery.Models.Artwork>
 @using ArtGallery.Models
 @{
-    ViewData["Title"] = "Artworks";
+    ViewData["Title"] = "Œuvres";
     var categories = ViewBag.Categories as List<Category>;
     var selectedCategory = Context.Request.Query["category"].ToString();
     var showForSale = Context.Request.Query["forSale"].ToString();
 }
 <div class="container mt-4">
-    <h2 class="mb-4">Artworks</h2>
+    <h2 class="mb-4">Œuvres</h2>
     <form method="get" class="row g-3 mb-4 align-items-end">
         <div class="col-md-4">
             <label for="category" class="form-label">Category</label>
@@ -77,7 +77,7 @@ else
                             </small>
                         </p>
                         <p class="card-text"><strong>Price: @item.Price.ToString("C")</strong></p>
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">Details</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">Voir les détails</a>
                         @if (User.Identity.IsAuthenticated && !User.IsInRole("Admin") && item.IsAvailable && item.IsForSale)
                         {
                             <form asp-controller="ShoppingCart" asp-action="AddToCart" method="post" class="d-inline ms-2">
@@ -92,7 +92,7 @@ else
     </div>
     @if (!Model.Any())
     {
-        <div class="alert alert-info mt-4">No artworks found.</div>
+        <div class="alert alert-info mt-4">Aucune œuvre trouvée.</div>
     }
 </div>
 @section Styles {
@@ -104,18 +104,21 @@ else
     </style>
 }
 @{
-    ViewData["Title"] = "Artworks";
+    ViewData["Title"] = "Œuvres";
 }
 
-<h2>Artworks</h2>
+<h2>Œuvres</h2>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New Artwork</a>
-</p>
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Créer une œuvre</a>
+    </p>
+}
 
 @if (!Model.Any())
 {
-    <div class="alert alert-info">No artworks found.</div>
+    <div class="alert alert-info">Aucune œuvre trouvée.</div>
 }
 else
 {
@@ -154,9 +157,9 @@ else
                 <td>@item.IsFeatured</td>
                 <td>@item.CreationDate.ToShortDateString()</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Modifier</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Voir les détails</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Supprimer</a>
                 </td>
             </tr>
         }

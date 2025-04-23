@@ -1,19 +1,20 @@
 @model ArtGallery.Models.ExternalLink
 @{
-    ViewData["Title"] = "Edit External Link";
+    ViewData["Title"] = "Modifier un lien externe";
 }
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0"><i class="bi bi-link-45deg"></i> Edit External Link</h3>
+                    <h3 class="mb-0"><i class="bi bi-link-45deg"></i> Modifier un lien externe</h3>
                 </div>
                 <div class="card-body">
                     <form asp-action="Edit" method="post">
                         <input type="hidden" asp-for="Id" />
                         <div asp-validation-summary="All" class="text-danger mb-3"></div>
                         <div class="mb-3">
+                            <label asp-for="Title" class="form-label">Titre</label>
                             <label asp-for="Title" class="form-label"></label>
                             <input asp-for="Title" class="form-control" />
                             <span asp-validation-for="Title" class="text-danger"></span>
@@ -48,7 +49,7 @@
                             <input asp-for="SortOrder" type="number" class="form-control" />
                             <span asp-validation-for="SortOrder" class="text-danger"></span>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100"><i class="bi bi-save"></i> Save Changes</button>
+                        <button type="submit" class="btn btn-primary w-100"><i class="bi bi-save"></i> Enregistrer Changes</button>
                     </form>
                 </div>
             </div>

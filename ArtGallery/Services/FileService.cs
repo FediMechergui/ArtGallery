@@ -6,23 +6,31 @@ using Microsoft.Extensions.Configuration;
 
 namespace ArtGallery.Services
 {
+    // Interface pour la gestion des fichiers (upload, suppression).
     public interface IFileService
     {
+        // Téléverse un fichier de manière asynchrone dans un sous-dossier.
         Task<string> UploadFileAsync(IFormFile file, string subDirectory);
+        // Supprime un fichier selon son chemin relatif.
         void DeleteFile(string filePath);
     }
 
+    // Service concret pour la gestion des fichiers (upload, suppression).
     public class FileService : IFileService
     {
+        // Configuration de l'application.
         private readonly IConfiguration _configuration;
+        // Chemin de base pour le stockage des fichiers uploadés.
         private readonly string _basePath;
 
+        // Constructeur du service de fichiers.
         public FileService(IConfiguration configuration)
         {
             _configuration = configuration;
             _basePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
         }
 
+        // Téléverse un fichier dans un sous-dossier et retourne le chemin relatif.
         public async Task<string> UploadFileAsync(IFormFile file, string subDirectory)
         {
             if (file == null || file.Length == 0)
@@ -43,6 +51,7 @@ namespace ArtGallery.Services
             return Path.Combine("uploads", subDirectory, fileName).Replace("\\", "/");
         }
 
+        // Supprime un fichier du stockage local selon son chemin relatif.
         public void DeleteFile(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))

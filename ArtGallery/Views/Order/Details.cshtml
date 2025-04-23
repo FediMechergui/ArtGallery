@@ -2,11 +2,11 @@
 @using ArtGallery.Models
 
 @{
-    ViewData["Title"] = "Order Details";
+    ViewData["Title"] = "Voir les détails de la commande";
 }
 
 <div class="container">
-    <h1 class="mb-4">Order Details</h1>
+    <h1 class="mb-4">Voir les détails de la commande</h1>
 
     <div class="card mb-4">
         <div class="card-header">
@@ -102,13 +102,13 @@
     </div>
 
     <div class="mt-4">
-        <a asp-action="Index" class="btn btn-secondary">Back to Orders</a>
+        <a asp-action="Index" class="btn btn-secondary">Retour à la liste des commandes</a>
         @if (User.IsInRole("Admin") && Model.Status == OrderStatus.Pending)
         {
             <form asp-action="UpdateStatus" method="post" class="d-inline">
                 <input type="hidden" name="id" value="@Model.Id" />
                 <input type="hidden" name="status" value="@OrderStatus.Processing" />
-                <button type="submit" class="btn btn-success">Process Order</button>
+                <button type="submit" class="btn btn-success">Traiter la commande</button>
             </form>
         }
     </div>

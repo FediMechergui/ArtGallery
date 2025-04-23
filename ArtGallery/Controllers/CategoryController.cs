@@ -11,42 +11,53 @@ namespace ArtGallery.Controllers
     {
         private readonly ApplicationDbContext _context;
 
+        // Constructeur : injection du contexte de base de données
         public CategoryController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Category
+        /// <summary>
+        /// Affiche la liste des catégories d'œuvres d'art.
+        /// </summary>
         public async Task<IActionResult> Index()
         {
             return View(await _context.Categories.ToListAsync());
         }
 
-        // GET: Category/Details/5
+        /// <summary>
+        /// Affiche les détails d'une catégorie spécifique.
+        /// </summary>
+        /// <param name="id">Identifiant de la catégorie</param>
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return NotFound("La catégorie n'a pas été trouvée.");
             }
 
             var category = await _context.Categories
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (category == null)
             {
-                return NotFound();
+                return NotFound("La catégorie n'a pas été trouvée.");
             }
 
             return View(category);
         }
 
-        // GET: Category/Create
+        /// <summary>
+        /// Affiche le formulaire de création d'une nouvelle catégorie.
+        /// </summary>
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Category/Create
+        /// <summary>
+        /// Traite la soumission du formulaire de création d'une catégorie.
+        /// </summary>
+        /// <param name="category">Objet Category à créer</param>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name,Description,IsActive")] Category category)
@@ -60,30 +71,37 @@ namespace ArtGallery.Controllers
             return View(category);
         }
 
-        // GET: Category/Edit/5
+        /// <summary>
+        /// Affiche le formulaire d'édition d'une catégorie existante.
+        /// </summary>
+        /// <param name="id">Identifiant de la catégorie à éditer</param>
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return NotFound("La catégorie n'a pas été trouvée.");
             }
 
             var category = await _context.Categories.FindAsync(id);
             if (category == null)
             {
-                return NotFound();
+                return NotFound("La catégorie n'a pas été trouvée.");
             }
             return View(category);
         }
 
-        // POST: Category/Edit/5
+        /// <summary>
+        /// Traite la soumission du formulaire d'édition d'une catégorie.
+        /// </summary>
+        /// <param name="id">Identifiant de la catégorie</param>
+        /// <param name="category">Objet Category modifié</param>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,IsActive")] Category category)
         {
             if (id != category.Id)
             {
-                return NotFound();
+                return NotFound("La catégorie n'a pas été trouvée.");
             }
 
             if (ModelState.IsValid)
@@ -97,7 +115,7 @@ namespace ArtGallery.Controllers
                 {
                     if (!CategoryExists(category.Id))
                     {
-                        return NotFound();
+                        return NotFound("La catégorie n'a pas été trouvée.");
                     }
                     else
                     {
@@ -109,25 +127,31 @@ namespace ArtGallery.Controllers
             return View(category);
         }
 
-        // GET: Category/Delete/5
+        /// <summary>
+        /// Affiche la page de confirmation de suppression d'une catégorie.
+        /// </summary>
+        /// <param name="id">Identifiant de la catégorie à supprimer</param>
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return NotFound("La catégorie n'a pas été trouvée.");
             }
 
             var category = await _context.Categories
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (category == null)
             {
-                return NotFound();
+                return NotFound("La catégorie n'a pas été trouvée.");
             }
 
             return View(category);
         }
 
-        // POST: Category/Delete/5
+        /// <summary>
+        /// Traite la suppression définitive d'une catégorie.
+        /// </summary>
+        /// <param name="id">Identifiant de la catégorie à supprimer</param>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -142,9 +166,14 @@ namespace ArtGallery.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /// <summary>
+        /// Vérifie si une catégorie existe dans la base de données.
+        /// </summary>
+        /// <param name="id">Identifiant de la catégorie</param>
+        /// <returns>Vrai si la catégorie existe, faux sinon</returns>
         private bool CategoryExists(int id)
         {
             return _context.Categories.Any(e => e.Id == id);
         }
     }
-} 
+}

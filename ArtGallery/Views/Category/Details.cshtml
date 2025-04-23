@@ -1,11 +1,11 @@
 @model ArtGallery.Models.Category
 
 @{
-    ViewData["Title"] = "Category Details";
+    ViewData["Title"] = "Voir les détails de la catégorie";
 }
 
 <div class="container">
-    <h1 class="text-center mb-4">Category Details</h1>
+    <h1 class="text-center mb-4">Voir les détails de la catégorie</h1>
 
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -30,9 +30,9 @@
             </div>
 
             <div class="mt-4">
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
-                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Modifier</a>
+                <a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
             </div>
         </div>
     </div>
-</div> 
+</div>

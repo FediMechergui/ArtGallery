@@ -15,11 +15,15 @@ namespace ArtGallery.Controllers
     {
         private readonly ApplicationDbContext _context;
 
+                // Constructeur : injection du contexte de base de données
         public ShoppingCartController(ApplicationDbContext context)
         {
             _context = context;
         }
 
+                /// <summary>
+        /// Affiche le panier de l'utilisateur connecté.
+        /// </summary>
         public async Task<IActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -32,6 +36,11 @@ namespace ArtGallery.Controllers
         }
 
         [HttpPost]
+                /// <summary>
+        /// Ajoute une œuvre au panier de l'utilisateur.
+        /// </summary>
+        /// <param name="artworkId">Identifiant de l'œuvre à ajouter</param>
+        /// <param name="quantity">Quantité à ajouter (par défaut 1)</param>
         public async Task<IActionResult> AddToCart(int artworkId, int quantity = 1)
         {
             var artwork = await _context.Artworks.FindAsync(artworkId);
@@ -73,6 +82,11 @@ namespace ArtGallery.Controllers
         }
 
         [HttpPost]
+                /// <summary>
+        /// Met à jour la quantité d'une œuvre dans le panier.
+        /// </summary>
+        /// <param name="id">Identifiant de l'entrée du panier</param>
+        /// <param name="quantity">Nouvelle quantité</param>
         public async Task<IActionResult> UpdateQuantity(int id, int quantity)
         {
             var cartItem = await _context.ShoppingCarts.FindAsync(id);
@@ -87,6 +101,10 @@ namespace ArtGallery.Controllers
         }
 
         [HttpPost]
+                /// <summary>
+        /// Supprime une œuvre du panier de l'utilisateur.
+        /// </summary>
+        /// <param name="id">Identifiant de l'entrée du panier à supprimer</param>
         public async Task<IActionResult> RemoveFromCart(int id)
         {
             var cartItem = await _context.ShoppingCarts.FindAsync(id);
@@ -101,6 +119,10 @@ namespace ArtGallery.Controllers
         }
 
         [HttpPost]
+                /// <summary>
+        /// Valide le panier et crée une commande à partir des œuvres sélectionnées.
+        /// </summary>
+        /// <param name="artworkId">Identifiant d'une œuvre pour achat rapide (optionnel)</param>
         public async Task<IActionResult> Checkout(int? artworkId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

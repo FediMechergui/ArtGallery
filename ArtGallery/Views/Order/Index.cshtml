@@ -1,16 +1,16 @@
 @model IEnumerable<ArtGallery.Models.Order>
 
 @{
-    ViewData["Title"] = "My Orders";
+    ViewData["Title"] = "My Commandes";
 }
 
 <div class="container">
-    <h1 class="mb-4">My Orders</h1>
+    <h1 class="mb-4">Mes Commandes</h1>
 
     @if (!Model.Any())
     {
         <div class="alert alert-info">
-            You haven't placed any orders yet.
+            Aucune commande trouvée.
         </div>
     }
     else
@@ -19,8 +19,8 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Order #</th>
-                        <th>Date</th>
+                        <th>N° de commande</th>
+                        <th>Date de commande</th>
                         <th>Status</th>
                         <th>Total</th>
                         <th>Actions</th>
@@ -45,7 +45,7 @@
                             </td>
                             <td>@order.TotalAmount.ToString("C")</td>
                             <td>
-                                <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-primary btn-sm">View Details</a>
+                                <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-primary btn-sm">Voir les détails</a>
                             </td>
                         </tr>
                     }
@@ -55,7 +55,7 @@
     }
 
     <div class="mt-4">
-        <a asp-controller="Artwork" asp-action="Index" class="btn btn-primary">Continue Shopping</a>
+        <a asp-controller="Artwork" asp-action="Index" class="btn btn-primary">Continuer les achats</a>
     </div>
 </div>
 

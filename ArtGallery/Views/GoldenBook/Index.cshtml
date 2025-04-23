@@ -1,16 +1,16 @@
 @model IEnumerable<ArtGallery.Models.GoldenBookEntry>
 
 @{
-    ViewData["Title"] = "Guestbook";
+    ViewData["Title"] = "Livre d'or";
 }
 
 <div class="container">
     <div class="row">
         <div class="col-md-8 offset-md-2">
-            <h1 class="text-center mb-4">Guestbook</h1>
+            <h1 class="text-center mb-4">Livre d'or</h1>
             
             <div class="text-center mb-4">
-                <a asp-action="Create" class="btn btn-primary">Leave a Message</a>
+                <a asp-action="Create" asp-controller="GoldenBook" class="btn btn-primary">Ajouter une entrée</a>
             </div>
 
             @foreach (var entry in Model)
@@ -33,7 +33,7 @@
                                     }
                                     <form asp-action="Delete" asp-route-id="@entry.Id" method="post" class="d-inline">
                                         @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this entry?')">Delete</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this entry?')">Supprimer</button>
                                     </form>
                                 </div>
                             }

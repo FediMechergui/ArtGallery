@@ -1,50 +1,50 @@
 @model Exhibition
 @{
-    ViewData["Title"] = "Edit Exhibition";
+    ViewData["Title"] = "Modifier une exposition";
 }
-<h2>Edit Exhibition</h2>
+<h2>Modifier une exposition</h2>
 <form asp-action="Edit" method="post" enctype="multipart/form-data">
     <div asp-validation-summary="All" class="text-danger mb-3"></div>
     <input type="hidden" asp-for="Id" />
     <div class="mb-3">
-        <label asp-for="Title" class="form-label"></label>
+        <label asp-for="Title" class="form-label">Titre</label>
         <input asp-for="Title" class="form-control" />
         <span asp-validation-for="Title" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Description" class="form-label"></label>
+        <label asp-for="Description" class="form-label">Description</label>
         <input asp-for="Description" class="form-control" />
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="StartDate" class="form-label"></label>
+        <label asp-for="StartDate" class="form-label">Date de début</label>
         <input asp-for="StartDate" type="date" class="form-control" />
         <span asp-validation-for="StartDate" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="EndDate" class="form-label"></label>
+        <label asp-for="EndDate" class="form-label">Date de fin</label>
         <input asp-for="EndDate" type="date" class="form-control" />
         <span asp-validation-for="EndDate" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Location" class="form-label"></label>
+        <label asp-for="Location" class="form-label">Lieu</label>
         <input asp-for="Location" class="form-control" />
         <span asp-validation-for="Location" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label>Current Image</label><br />
+        <label>Image actuelle</label><br />
         @if (!string.IsNullOrEmpty(Model.ImagePath))
         {
-            <img src="@Model.ImagePath" alt="Current Image" style="max-width:200px;max-height:150px;" class="mb-2" />
+            <img src="@Model.ImagePath" alt="Image actuelle" style="max-width:200px;max-height:150px;" class="mb-2" />
         }
     </div>
     <div class="mb-3">
-        <label for="imageFile" class="form-label">Change Image</label>
+        <label for="imageFile" class="form-label">Changer l'image</label>
         <input type="file" name="imageFile" id="imageFile" class="form-control" accept="image/*" />
         <span asp-validation-for="ImagePath" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-success">Save Changes</button>
-    <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+    <button type="submit" class="btn btn-success">Enregistrer les modifications</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Annuler</a>
 </form>
 @section Styles {
     <style>

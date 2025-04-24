@@ -3,17 +3,18 @@ using Microsoft.EntityFrameworkCore;
 using ArtGallery.Data;
 using ArtGallery.Models;
 using System.Threading.Tasks;
+using ArtGallery.Services;
 
 namespace ArtGallery.Controllers
 {
     public class ExhibitionController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IExhibitionService _exhibitionService;
 
-                // Constructeur : injection du contexte de base de données
-        public ExhibitionController(ApplicationDbContext context)
+        // Constructeur : injection du service
+        public ExhibitionController(IExhibitionService exhibitionService)
         {
-            _context = context;
+            _exhibitionService = exhibitionService;
         }
 
         // GET: Exhibition
@@ -22,10 +23,8 @@ namespace ArtGallery.Controllers
         /// </summary>
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Exhibitions
-                .Include(e => e.ExhibitionArtworks)
-                .ThenInclude(ea => ea.Artwork)
-                .ToListAsync());
+            var exhibitions = await _exhibitionService.GetExhibitionsAsync();
+            return View(exhibitions);
         }
 
         // GET: Exhibition/Details/5
@@ -35,21 +34,11 @@ namespace ArtGallery.Controllers
         /// <param name="id">Identifiant de l'exposition</param>
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var exhibition = await _context.Exhibitions
-                .Include(e => e.ExhibitionArtworks)
-                .ThenInclude(ea => ea.Artwork)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
+            var exhibition = await _exhibitionService.GetExhibitionDetailsAsync(id);
             if (exhibition == null)
             {
                 return NotFound();
             }
-
             return View(exhibition);
         }
 
@@ -77,25 +66,9 @@ namespace ArtGallery.Controllers
             {
                 ModelState.AddModelError("ImagePath", "An exhibition image is required.");
             }
-
             if (ModelState.IsValid)
             {
-                // Save uploaded image
-                if (imageFile != null && imageFile.Length > 0)
-                {
-                    var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/exhibitions");
-                    if (!Directory.Exists(uploadsDir))
-                        Directory.CreateDirectory(uploadsDir);
-                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
-                    var filePath = Path.Combine(uploadsDir, fileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await imageFile.CopyToAsync(stream);
-                    }
-                    exhibition.ImagePath = "/images/exhibitions/" + fileName;
-                }
-                _context.Add(exhibition);
-                await _context.SaveChangesAsync();
+                await _exhibitionService.CreateExhibitionAsync(exhibition, imageFile);
                 return RedirectToAction(nameof(Index));
             }
             return View(exhibition);
@@ -108,16 +81,9 @@ namespace ArtGallery.Controllers
         /// <param name="id">Identifiant de l'exposition à éditer</param>
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var exhibition = await _context.Exhibitions.FindAsync(id);
+            var exhibition = await _exhibitionService.GetExhibitionDetailsAsync(id);
             if (exhibition == null)
-            {
                 return NotFound();
-            }
             return View(exhibition);
         }
 
@@ -137,43 +103,15 @@ namespace ArtGallery.Controllers
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var existingExhibition = await _context.Exhibitions.FindAsync(id);
-                    if (existingExhibition == null)
-                        return NotFound();
-
-                    // Update fields
-                    existingExhibition.Title = exhibition.Title;
-                    existingExhibition.Description = exhibition.Description;
-                    existingExhibition.StartDate = exhibition.StartDate;
-                    existingExhibition.EndDate = exhibition.EndDate;
-                    existingExhibition.Location = exhibition.Location;
-
-                    // Handle image change
-                    if (imageFile != null && imageFile.Length > 0)
-                    {
-                        var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/exhibitions");
-                        if (!Directory.Exists(uploadsDir))
-                            Directory.CreateDirectory(uploadsDir);
-                        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
-                        var filePath = Path.Combine(uploadsDir, fileName);
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await imageFile.CopyToAsync(stream);
-                        }
-                        existingExhibition.ImagePath = "/images/exhibitions/" + fileName;
-                    }
-
-                    _context.Update(existingExhibition);
-                    await _context.SaveChangesAsync();
+                    await _exhibitionService.UpdateExhibitionAsync(id, exhibition, imageFile);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception)
                 {
-                    if (!ExhibitionExists(exhibition.Id))
+                    if (!_exhibitionService.ExhibitionExists(exhibition.Id))
                     {
                         return NotFound();
                     }
@@ -194,18 +132,11 @@ namespace ArtGallery.Controllers
         /// <param name="id">Identifiant de l'exposition à supprimer</param>
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var exhibition = await _context.Exhibitions
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var exhibition = await _exhibitionService.GetExhibitionDetailsAsync(id);
             if (exhibition == null)
             {
                 return NotFound();
             }
-
             return View(exhibition);
         }
 
@@ -218,13 +149,11 @@ namespace ArtGallery.Controllers
         /// <param name="id">Identifiant de l'exposition à supprimer</param>
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var exhibition = await _context.Exhibitions.FindAsync(id);
-            if (exhibition == null)
+            var result = await _exhibitionService.DeleteExhibitionAsync(id);
+            if (!result)
             {
                 return NotFound();
             }
-            _context.Exhibitions.Remove(exhibition);
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -235,7 +164,7 @@ namespace ArtGallery.Controllers
         /// <returns>Vrai si l'exposition existe, faux sinon</returns>
         private bool ExhibitionExists(int id)
         {
-            return _context.Exhibitions.Any(e => e.Id == id);
+            return _exhibitionService.ExhibitionExists(id);
         }
     }
 } 

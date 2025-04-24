@@ -12,6 +12,11 @@ var builder = WebApplication.CreateBuilder(args);
 // Ajout des services nécessaires pour les contrôleurs MVC et les vues Razor
 builder.Services.AddControllersWithViews();
 
+// Register custom services for DI
+builder.Services.AddScoped<ArtGallery.Services.IArtworkService, ArtGallery.Services.ArtworkService>();
+builder.Services.AddScoped<ArtGallery.Services.ICategoryService, ArtGallery.Services.CategoryService>();
+builder.Services.AddScoped<ArtGallery.Services.IExhibitionService, ArtGallery.Services.ExhibitionService>();
+
 // Add Entity Framework Core
 // Configuration du contexte de base de données avec SQL Server
 // Cette section permet de configurer la connexion à la base de données

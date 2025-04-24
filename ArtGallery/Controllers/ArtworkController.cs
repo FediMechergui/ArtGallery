@@ -3,17 +3,18 @@ using Microsoft.EntityFrameworkCore;
 using ArtGallery.Data;
 using ArtGallery.Models;
 using Microsoft.AspNetCore.Authorization;
+using ArtGallery.Services;
 
 namespace ArtGallery.Controllers
 {
     public class ArtworkController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IArtworkService _artworkService;
 
-                // Constructeur : injection du contexte de base de données
-        public ArtworkController(ApplicationDbContext context)
+        // Constructeur : injection du service
+        public ArtworkController(IArtworkService artworkService)
         {
-            _context = context;
+            _artworkService = artworkService;
         }
 
                 /// <summary>
@@ -23,23 +24,8 @@ namespace ArtGallery.Controllers
         /// <param name="forSale">Filtre pour les œuvres en vente (optionnel)</param>
         public async Task<IActionResult> Index(int? category, bool? forSale)
         {
-            var artworksQuery = _context.Artworks
-                .Include(a => a.Categories)
-                .Include(a => a.Images)
-                .OrderByDescending(a => a.CreatedAt)
-                .AsQueryable();
-
-            if (category.HasValue)
-            {
-                artworksQuery = artworksQuery.Where(a => a.Categories.Any(c => c.Id == category));
-            }
-            if (forSale.HasValue)
-            {
-                artworksQuery = artworksQuery.Where(a => a.IsForSale == forSale);
-            }
-
-            var artworks = await artworksQuery.ToListAsync();
-            var categories = await _context.Categories.OrderBy(c => c.Name).ToListAsync();
+            var artworks = await _artworkService.GetArtworksAsync(category, forSale);
+            var categories = await _artworkService.GetCategoriesAsync();
             ViewBag.Categories = categories;
             return View(artworks);
         }
@@ -50,21 +36,11 @@ namespace ArtGallery.Controllers
         /// <param name="id">Identifiant de l'œuvre</param>
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var artwork = await _context.Artworks
-                .Include(a => a.Categories)
-                .Include(a => a.Images)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
+            var artwork = await _artworkService.GetArtworkDetailsAsync(id);
             if (artwork == null)
             {
                 return NotFound();
             }
-
             return View(artwork);
         }
 
@@ -72,9 +48,9 @@ namespace ArtGallery.Controllers
         /// Affiche le formulaire de création d'une nouvelle œuvre (réservé à l'admin).
         /// </summary>
         [Authorize(Roles = "Admin")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewBag.Categories = _context.Categories.ToList();
+            ViewBag.Categories = await _artworkService.GetCategoriesAsync();
             return View();
         }
 
@@ -92,37 +68,10 @@ namespace ArtGallery.Controllers
         {
             if (ModelState.IsValid)
             {
-                artwork.Categories = await _context.Categories
-                    .Where(c => selectedCategories.Contains(c.Id))
-                    .ToListAsync();
-                _context.Add(artwork);
-                await _context.SaveChangesAsync();
-
-                // Save uploaded image as ArtworkImage
-                if (imageFile != null && imageFile.Length > 0)
-                {
-                    var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/artworks");
-                    Directory.CreateDirectory(uploads);
-                    var fileName = Guid.NewGuid() + Path.GetExtension(imageFile.FileName);
-                    var filePath = Path.Combine(uploads, fileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await imageFile.CopyToAsync(stream);
-                    }
-                    var artworkImage = new ArtworkImage
-                    {
-                        ArtworkId = artwork.Id,
-                        Artwork = artwork,
-                        ImagePath = "/images/artworks/" + fileName,
-                        IsPrimary = true,
-                        DisplayOrder = 0
-                    };
-                    _context.Add(artworkImage);
-                    await _context.SaveChangesAsync();
-                }
+                await _artworkService.CreateArtworkAsync(artwork, selectedCategories, imageFile);
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.Categories = _context.Categories.ToList();
+            ViewBag.Categories = await _artworkService.GetCategoriesAsync();
             return View(artwork);
         }
 
@@ -133,21 +82,12 @@ namespace ArtGallery.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var artwork = await _context.Artworks
-                .Include(a => a.Categories)
-                .FirstOrDefaultAsync(a => a.Id == id);
-
+            var artwork = await _artworkService.GetArtworkDetailsAsync(id);
             if (artwork == null)
             {
                 return NotFound();
             }
-
-            ViewBag.Categories = _context.Categories.ToList();
+            ViewBag.Categories = await _artworkService.GetCategoriesAsync();
             return View(artwork);
         }
 
@@ -167,46 +107,15 @@ namespace ArtGallery.Controllers
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var existingArtwork = await _context.Artworks
-                        .Include(a => a.Categories)
-                        .FirstOrDefaultAsync(a => a.Id == id);
-
-                    if (existingArtwork == null)
-                    {
-                        return NotFound();
-                    }
-
-                    existingArtwork.Title = artwork.Title;
-                    existingArtwork.Description = artwork.Description;
-                    existingArtwork.TechniqueUsed = artwork.TechniqueUsed;
-                    existingArtwork.Size = artwork.Size;
-                    existingArtwork.Price = artwork.Price;
-                    existingArtwork.CreationDate = artwork.CreationDate;
-
-                    existingArtwork.IsAvailable = artwork.IsAvailable;
-                    existingArtwork.IsForSale = artwork.IsForSale;
-                    existingArtwork.IsFeatured = artwork.IsFeatured;
-                    existingArtwork.UpdatedAt = DateTime.Now;
-
-                    existingArtwork.Categories.Clear();
-                    var selectedCategoryEntities = await _context.Categories
-                        .Where(c => selectedCategories.Contains(c.Id))
-                        .ToListAsync();
-                    foreach (var category in selectedCategoryEntities)
-                    {
-                        existingArtwork.Categories.Add(category);
-                    }
-
-                    await _context.SaveChangesAsync();
+                    await _artworkService.UpdateArtworkAsync(id, artwork, selectedCategories);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception)
                 {
-                    if (!ArtworkExists(artwork.Id))
+                    if (!_artworkService.ArtworkExists(artwork.Id))
                     {
                         return NotFound();
                     }
@@ -217,8 +126,7 @@ namespace ArtGallery.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-
-            ViewBag.Categories = _context.Categories.ToList();
+            ViewBag.Categories = await _artworkService.GetCategoriesAsync();
             return View(artwork);
         }
 
@@ -229,20 +137,11 @@ namespace ArtGallery.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var artwork = await _context.Artworks
-                .Include(a => a.Categories)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
+            var artwork = await _artworkService.GetArtworkDetailsAsync(id);
             if (artwork == null)
             {
                 return NotFound();
             }
-
             return View(artwork);
         }
 
@@ -255,14 +154,11 @@ namespace ArtGallery.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var artwork = await _context.Artworks.FindAsync(id);
-            if (artwork == null)
+            var result = await _artworkService.DeleteArtworkAsync(id);
+            if (!result)
             {
                 return NotFound();
             }
-
-            _context.Artworks.Remove(artwork);
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -273,7 +169,7 @@ namespace ArtGallery.Controllers
         /// <returns>Vrai si l'œuvre existe, faux sinon</returns>
         private bool ArtworkExists(int id)
         {
-            return _context.Artworks.Any(e => e.Id == id);
+            return _artworkService.ArtworkExists(id);
         }
     }
 } 

@@ -3,18 +3,19 @@ using Microsoft.EntityFrameworkCore;
 using ArtGallery.Data;
 using ArtGallery.Models;
 using Microsoft.AspNetCore.Authorization;
+using ArtGallery.Services;
 
 namespace ArtGallery.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ICategoryService _categoryService;
 
-        // Constructeur : injection du contexte de base de données
-        public CategoryController(ApplicationDbContext context)
+        // Constructeur : injection du service
+        public CategoryController(ICategoryService categoryService)
         {
-            _context = context;
+            _categoryService = categoryService;
         }
 
         /// <summary>
@@ -22,7 +23,8 @@ namespace ArtGallery.Controllers
         /// </summary>
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+            var categories = await _categoryService.GetCategoriesAsync();
+            return View(categories);
         }
 
         /// <summary>
@@ -31,18 +33,11 @@ namespace ArtGallery.Controllers
         /// <param name="id">Identifiant de la catégorie</param>
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound("La catégorie n'a pas été trouvée.");
-            }
-
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var category = await _categoryService.GetCategoryDetailsAsync(id);
             if (category == null)
             {
                 return NotFound("La catégorie n'a pas été trouvée.");
             }
-
             return View(category);
         }
 
@@ -64,8 +59,7 @@ namespace ArtGallery.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(category);
-                await _context.SaveChangesAsync();
+                await _categoryService.CreateCategoryAsync(category);
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
@@ -77,12 +71,7 @@ namespace ArtGallery.Controllers
         /// <param name="id">Identifiant de la catégorie à éditer</param>
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound("La catégorie n'a pas été trouvée.");
-            }
-
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _categoryService.GetCategoryDetailsAsync(id);
             if (category == null)
             {
                 return NotFound("La catégorie n'a pas été trouvée.");
@@ -103,17 +92,15 @@ namespace ArtGallery.Controllers
             {
                 return NotFound("La catégorie n'a pas été trouvée.");
             }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(category);
-                    await _context.SaveChangesAsync();
+                    await _categoryService.UpdateCategoryAsync(id, category);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception)
                 {
-                    if (!CategoryExists(category.Id))
+                    if (!_categoryService.CategoryExists(category.Id))
                     {
                         return NotFound("La catégorie n'a pas été trouvée.");
                     }
@@ -133,18 +120,11 @@ namespace ArtGallery.Controllers
         /// <param name="id">Identifiant de la catégorie à supprimer</param>
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound("La catégorie n'a pas été trouvée.");
-            }
-
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var category = await _categoryService.GetCategoryDetailsAsync(id);
             if (category == null)
             {
                 return NotFound("La catégorie n'a pas été trouvée.");
             }
-
             return View(category);
         }
 
@@ -156,13 +136,11 @@ namespace ArtGallery.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            if (category != null)
+            var result = await _categoryService.DeleteCategoryAsync(id);
+            if (!result)
             {
-                _context.Categories.Remove(category);
+                return NotFound("La catégorie n'a pas été trouvée.");
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -173,7 +151,7 @@ namespace ArtGallery.Controllers
         /// <returns>Vrai si la catégorie existe, faux sinon</returns>
         private bool CategoryExists(int id)
         {
-            return _context.Categories.Any(e => e.Id == id);
+            return _categoryService.CategoryExists(id);
         }
     }
 }

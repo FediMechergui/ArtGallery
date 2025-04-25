@@ -4,26 +4,28 @@ using ArtGallery.Data;
 using ArtGallery.Models;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using ArtGallery.Services;
 
 namespace ArtGallery.Controllers
 {
     public class ExternalLinkController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IExternalLinkService _externalLinkService;
 
-                // Constructeur : injection du contexte de base de données
-        public ExternalLinkController(ApplicationDbContext context)
+        // Constructeur : injection du service
+        public ExternalLinkController(IExternalLinkService externalLinkService)
         {
-            _context = context;
+            _externalLinkService = externalLinkService;
         }
 
         // GET: ExternalLink
-                /// <summary>
+        /// <summary>
         /// Affiche la liste des liens externes.
         /// </summary>
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ExternalLinks.ToListAsync());
+            var links = await _externalLinkService.GetAllAsync();
+            return View(links);
         }
 
         // GET: ExternalLink/Create
@@ -49,10 +51,7 @@ namespace ArtGallery.Controllers
         {
             if (ModelState.IsValid)
             {
-                externalLink.CreatedAt = DateTime.Now;
-                externalLink.UpdatedAt = null;
-                _context.Add(externalLink);
-                await _context.SaveChangesAsync();
+                await _externalLinkService.CreateAsync(externalLink);
                 return RedirectToAction(nameof(Index));
             }
             return View(externalLink);
@@ -72,7 +71,7 @@ namespace ArtGallery.Controllers
                 return NotFound();
             }
 
-            var externalLink = await _context.ExternalLinks.FindAsync(id);
+            var externalLink = await _externalLinkService.GetByIdAsync(id.Value);
             if (externalLink == null)
             {
                 return NotFound();
@@ -100,18 +99,16 @@ namespace ArtGallery.Controllers
             {
                 try
                 {
-                    // Get the original entity
-                    var existing = await _context.ExternalLinks.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
-                    if (existing == null)
-                        return NotFound();
-                    externalLink.CreatedAt = existing.CreatedAt; // preserve original
-                    externalLink.UpdatedAt = DateTime.Now;
-                    _context.Update(externalLink);
-                    await _context.SaveChangesAsync();
+                    await _externalLinkService.UpdateAsync(externalLink);
+                }
+                catch (KeyNotFoundException)
+                {
+                    return NotFound();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ExternalLinkExists(externalLink.Id))
+                    var exists = await _externalLinkService.ExistsAsync(externalLink.Id);
+                    if (!exists)
                     {
                         return NotFound();
                     }
@@ -139,8 +136,7 @@ namespace ArtGallery.Controllers
                 return NotFound();
             }
 
-            var externalLink = await _context.ExternalLinks
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var externalLink = await _externalLinkService.GetByIdAsync(id.Value);
             if (externalLink == null)
             {
                 return NotFound();
@@ -159,13 +155,14 @@ namespace ArtGallery.Controllers
         /// <param name="id">Identifiant du lien externe à supprimer</param>
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var externalLink = await _context.ExternalLinks.FindAsync(id);
-            if (externalLink == null)
+            try
+            {
+                await _externalLinkService.DeleteAsync(id);
+            }
+            catch (KeyNotFoundException)
             {
                 return NotFound();
             }
-            _context.ExternalLinks.Remove(externalLink);
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -174,9 +171,9 @@ namespace ArtGallery.Controllers
         /// </summary>
         /// <param name="id">Identifiant du lien externe</param>
         /// <returns>Vrai si le lien existe, faux sinon</returns>
-        private bool ExternalLinkExists(int id)
+        private async Task<bool> ExternalLinkExists(int id)
         {
-            return _context.ExternalLinks.Any(e => e.Id == id);
+            return await _externalLinkService.ExistsAsync(id);
         }
     }
 } 

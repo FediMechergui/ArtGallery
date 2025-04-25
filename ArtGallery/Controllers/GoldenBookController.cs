@@ -4,17 +4,18 @@ using ArtGallery.Data;
 using ArtGallery.Models;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using ArtGallery.Services;
 
 namespace ArtGallery.Controllers
 {
     public class GoldenBookController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IGoldenBookService _goldenBookService;
 
-        // Constructeur : injection du contexte de base de données
-        public GoldenBookController(ApplicationDbContext context)
+        // Constructeur : injection du service
+        public GoldenBookController(IGoldenBookService goldenBookService)
         {
-            _context = context;
+            _goldenBookService = goldenBookService;
         }
 
         // GET: GoldenBook
@@ -23,9 +24,8 @@ namespace ArtGallery.Controllers
         /// </summary>
         public async Task<IActionResult> Index()
         {
-            return View(await _context.GoldenBookEntries
-                .OrderByDescending(g => g.CreatedAt)
-                .ToListAsync());
+            var entries = await _goldenBookService.GetAllAsync();
+            return View(entries);
         }
 
         // GET: GoldenBook/Create
@@ -48,9 +48,7 @@ namespace ArtGallery.Controllers
         {
             if (ModelState.IsValid)
             {
-                goldenBookEntry.CreatedAt = DateTime.Now;
-                _context.Add(goldenBookEntry);
-                await _context.SaveChangesAsync();
+                await _goldenBookService.CreateAsync(goldenBookEntry);
                 return RedirectToAction(nameof(Index));
             }
             return View(goldenBookEntry);
@@ -69,8 +67,7 @@ namespace ArtGallery.Controllers
                 return NotFound("La page demandée n'a pas été trouvée.");
             }
 
-            var goldenBookEntry = await _context.GoldenBookEntries
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var goldenBookEntry = await _goldenBookService.GetByIdAsync(id.Value);
             if (goldenBookEntry == null)
             {
                 return NotFound("La page demandée n'a pas été trouvée.");
@@ -89,11 +86,13 @@ namespace ArtGallery.Controllers
         /// <param name="id">Identifiant du message à supprimer</param>
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var goldenBookEntry = await _context.GoldenBookEntries.FindAsync(id);
-            if (goldenBookEntry != null)
+            try
             {
-                _context.GoldenBookEntries.Remove(goldenBookEntry);
-                await _context.SaveChangesAsync();
+                await _goldenBookService.DeleteAsync(id);
+            }
+            catch (KeyNotFoundException)
+            {
+                // Optionnel : afficher un message d'erreur ou rediriger
             }
             return RedirectToAction(nameof(Index));
         }
@@ -103,9 +102,9 @@ namespace ArtGallery.Controllers
         /// </summary>
         /// <param name="id">Identifiant du message</param>
         /// <returns>Vrai si le message existe, faux sinon</returns>
-        private bool GoldenBookEntryExists(int id)
+        private async Task<bool> GoldenBookEntryExists(int id)
         {
-            return _context.GoldenBookEntries.Any(e => e.Id == id);
+            return await _goldenBookService.ExistsAsync(id);
         }
     }
 }

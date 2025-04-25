@@ -4,6 +4,32 @@ Ce guide explique comment déployer et utiliser l'application ArtGallery avec AS
 
 ---
 
+## Architecture de l'application (NOUVEAUTÉ)
+
+L'application ArtGallery applique désormais une architecture propre (Clean Architecture) :
+
+- **Séparation stricte des responsabilités** : la logique métier (CRUD, règles, gestion d'images, etc.) est déplacée dans des classes de service dédiées.
+- **Services métiers** : chaque entité principale dispose d'un service :
+  - `ArtworkService` (œuvres)
+  - `CategoryService` (catégories)
+  - `ExhibitionService` (expositions)
+- **Interfaces** : chaque service implémente une interface (`IArtworkService`, `ICategoryService`, `IExhibitionService`) pour garantir la cohérence et faciliter les tests.
+- **Injection de dépendances (DI)** : les services sont enregistrés dans le conteneur DI dans `Program.cs` :
+  ```csharp
+  builder.Services.AddScoped<IArtworkService, ArtworkService>();
+  builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MaConnexion")));
+// Remarque : Remplacez AppDbContext par ApplicationDbContext si c'est le nom réel de votre contexte.
+  ```
+- **Contrôleurs simplifiés** : les contrôleurs ne contiennent plus de logique métier. Ils orchestrent simplement les appels aux services et passent les données aux vues.
+
+**Avantages :**
+- Code plus maintenable, évolutif et testable
+- Respect des bonnes pratiques ASP.NET Core
+- Ajout de nouvelles règles métier ou entités facilité
+
+---
+
 ## 1. Prérequis
 
 - **Windows 10/11**
@@ -37,7 +63,7 @@ Ce guide explique comment déployer et utiliser l'application ArtGallery avec AS
 2. **Configurer la chaîne de connexion** dans `appsettings.json` :
    ```json
    "ConnectionStrings": {
-     "DefaultConnection": "Server=localhost;Database=ArtGalleryDB;Trusted_Connection=True;"
+     "MaConnexion": "Data Source=DESKTOP-G2RNC80;Initial Catalog=LundiMatin;Integrated Security=True;Pooling=False;Encrypt=True;TrustServerCertificate=True"
    }
    ```
 3. **Vérifier les paramètres de migration** (le projet doit référencer Entity Framework Core et avoir les fichiers de migration si existants)
@@ -88,6 +114,10 @@ Ce guide explique comment déployer et utiliser l'application ArtGallery avec AS
 - **Problème de migration** :
   - Vérifier les dépendances NuGet (Microsoft.EntityFrameworkCore.*)
   - Nettoyer/reconstruire la solution
+- **Erreur d'injection de dépendance (DI) pour un service** :
+  - Vérifier que les services sont bien enregistrés dans `Program.cs` (voir section "Architecture de l'application")
+  - Vérifier que les fichiers d'interface et de service sont bien présents dans le dossier `Services`
+  - Vérifier les `using` en haut des contrôleurs (`using ArtGallery.Services;`)
 - **Autres** :
   - Consulter la console de sortie de Visual Studio pour plus de détails
 

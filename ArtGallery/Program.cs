@@ -16,6 +16,12 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<ArtGallery.Services.IArtworkService, ArtGallery.Services.ArtworkService>();
 builder.Services.AddScoped<ArtGallery.Services.ICategoryService, ArtGallery.Services.CategoryService>();
 builder.Services.AddScoped<ArtGallery.Services.IExhibitionService, ArtGallery.Services.ExhibitionService>();
+builder.Services.AddScoped<ArtGallery.Services.IExternalLinkService, ArtGallery.Services.ExternalLinkService>();
+builder.Services.AddScoped<ArtGallery.Services.IGoldenBookService, ArtGallery.Services.GoldenBookService>();
+builder.Services.AddScoped<ArtGallery.Services.IOrderService, ArtGallery.Services.OrderService>();
+builder.Services.AddScoped<ArtGallery.Services.IShoppingCartService, ArtGallery.Services.ShoppingCartService>();
+builder.Services.AddScoped<ArtGallery.Services.IHomeService, ArtGallery.Services.HomeService>();
+builder.Services.AddScoped<ArtGallery.Services.IAccountService, ArtGallery.Services.AccountService>();
 
 // Add Entity Framework Core
 // Configuration du contexte de base de données avec SQL Server

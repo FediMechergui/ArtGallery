@@ -3,17 +3,16 @@ using System.ComponentModel.DataAnnotations;
 
 using Microsoft.AspNetCore.Identity;
 using ArtGallery.Models;
+using ArtGallery.Services;
 
 public class AccountController : Controller
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly IAccountService _accountService;
 
-        // Constructeur : injection des services de gestion des utilisateurs et de connexion
-    public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+    // Constructeur : injection du service métier
+    public AccountController(IAccountService accountService)
     {
-        _userManager = userManager;
-        _signInManager = signInManager;
+        _accountService = accountService;
     }
 
         /// <summary>
@@ -34,12 +33,11 @@ public class AccountController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
-        var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, lockoutOnFailure: false);
-        if (result.Succeeded)
+        var result = await _accountService.LoginAsync(model, ModelState);
+        if (result)
         {
             return RedirectToAction("Index", "Home");
         }
-        ModelState.AddModelError("", "Tentative de connexion invalide.");
         return View(model);
     }
 
@@ -56,12 +54,15 @@ public class AccountController : Controller
     /// </summary>
     /// <param name="model">Modèle d'inscription avec email, mot de passe et confirmation</param>
     [HttpPost]
-    public IActionResult Register(RegisterViewModel model)
+    public async Task<IActionResult> Register(RegisterViewModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
-        // Si succès : return RedirectToAction("Login");
-        // Si échec : ModelState.AddModelError("", "Échec de l'inscription.");
+        var result = await _accountService.RegisterAsync(model, ModelState);
+        if (result)
+        {
+            return RedirectToAction("Login");
+        }
         return View(model);
     }
 }

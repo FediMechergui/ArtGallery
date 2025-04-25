@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using System.Linq;
 using System.Security.Claims;
+using ArtGallery.Services;
 
 namespace ArtGallery.Controllers
 {
@@ -14,12 +15,12 @@ namespace ArtGallery.Controllers
     public class OrderController : Controller
     {
         // Contexte de base de données pour accéder aux entités
-        private readonly ApplicationDbContext _context;
+        private readonly IOrderService _orderService;
 
-        // Constructeur : injection du contexte de base de données
-        public OrderController(ApplicationDbContext context)
+        // Constructeur : injection du service
+        public OrderController(IOrderService orderService)
         {
-            _context = context;
+            _orderService = orderService;
         }
 
         // Affiche la liste des commandes de l'utilisateur connecté
@@ -27,13 +28,7 @@ namespace ArtGallery.Controllers
         public async Task<IActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var orders = await _context.Orders
-                .Include(o => o.OrderDetails) // Inclut les détails de chaque commande
-                .ThenInclude(od => od.Artwork) // Inclut les œuvres associées à chaque détail
-                .Where(o => o.UserId == userId) // Filtre les commandes de l'utilisateur courant
-                .OrderByDescending(o => o.OrderDate) // Trie par date décroissante
-                .ToListAsync();
-
+            var orders = await _orderService.GetOrdersForUserAsync(userId);
             return View(orders);
         }
 
@@ -46,24 +41,17 @@ namespace ArtGallery.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Orders
-                .Include(o => o.User)
-                .Include(o => o.OrderDetails)
-                .ThenInclude(od => od.Artwork)
-                .FirstOrDefaultAsync(o => o.Id == id);
-
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var isAdmin = User.IsInRole("Admin");
+            var order = await _orderService.GetOrderDetailsAsync(id.Value, userId, isAdmin);
             if (order == null)
             {
+                if (id == null)
+                    return NotFound();
+                if (!isAdmin)
+                    return Forbid();
                 return NotFound();
             }
-
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            // Seul l'admin ou le propriétaire peut voir la commande
-            if (!User.IsInRole("Admin") && order.UserId != userId)
-            {
-                return Forbid();
-            }
-
             return View(order);
         }
 
@@ -71,13 +59,7 @@ namespace ArtGallery.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Manage()
         {
-            var orders = await _context.Orders
-                .Include(o => o.User)
-                .Include(o => o.OrderDetails)
-                .ThenInclude(od => od.Artwork)
-                .OrderByDescending(o => o.OrderDate)
-                .ToListAsync();
-
+            var orders = await _orderService.GetAllOrdersAsync();
             return View(orders);
         }
 
@@ -86,21 +68,12 @@ namespace ArtGallery.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateStatus(int id, OrderStatus status)
         {
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null)
+            var adminName = User.Identity?.Name;
+            var updated = await _orderService.UpdateStatusAsync(id, status, adminName);
+            if (!updated)
             {
                 return NotFound();
             }
-
-            order.Status = status;
-            // Si la commande passe en traitement, on enregistre l'approbation
-            if (status == OrderStatus.Processing)
-            {
-                order.ApprovedAt = DateTime.Now;
-                order.ApprovedBy = User.Identity?.Name;
-            }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Manage));
         }
 
@@ -109,15 +82,12 @@ namespace ArtGallery.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Approve(int id)
         {
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null)
+            var adminName = User.Identity?.Name;
+            var approved = await _orderService.ApproveAsync(id, adminName);
+            if (!approved)
             {
                 return NotFound();
             }
-            order.Status = OrderStatus.Approved;
-            order.ApprovedAt = DateTime.Now;
-            order.ApprovedBy = User.Identity?.Name;
-            await _context.SaveChangesAsync();
             // Optionnel : notifier l'utilisateur
             return RedirectToAction(nameof(Manage));
         }
@@ -127,13 +97,11 @@ namespace ArtGallery.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Decline(int id)
         {
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null)
+            var declined = await _orderService.DeclineAsync(id);
+            if (!declined)
             {
                 return NotFound();
             }
-            order.Status = OrderStatus.Declined;
-            await _context.SaveChangesAsync();
             // Optionnel : notifier l'utilisateur
             return RedirectToAction(nameof(Manage));
         }

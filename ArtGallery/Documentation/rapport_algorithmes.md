@@ -37,6 +37,22 @@ Ce rapport détaille l’ensemble des algorithmes et logiques métiers utilisés
 ### Principe MVC
 L’architecture MVC (Modèle-Vue-Contrôleur) sépare la logique métier, la présentation et la gestion des requêtes. Les modèles représentent les données et leur structure, les vues affichent l’information à l’utilisateur, et les contrôleurs orchestrent les interactions, appliquant les algorithmes nécessaires pour répondre aux actions de l’utilisateur.
 
+### Clean Architecture et Services Métiers (NOUVEAUTÉ)
+
+Depuis la dernière évolution du projet, la logique métier (CRUD, règles, gestion d’images, etc.) a été déplacée dans des **services métiers** dédiés : `ArtworkService`, `CategoryService`, `ExhibitionService`.
+
+- **Chaque service** implémente une interface (`IArtworkService`, `ICategoryService`, `IExhibitionService`) pour garantir la cohérence et faciliter les tests.
+- **Injection de dépendances (DI)** : les services sont enregistrés dans le conteneur DI (`Program.cs`) et injectés dans les contrôleurs.
+- **Contrôleurs minces** : ils ne contiennent plus de logique métier, mais orchestrent simplement les appels aux services.
+
+**Avantages :**
+- Code plus maintenable, évolutif et testable
+- Ajout de nouvelles règles métier ou entités facilité
+- Respect des bonnes pratiques ASP.NET Core
+
+**Exemple :**
+Pour la gestion des œuvres, le contrôleur `ArtworkController` appelle uniquement les méthodes de `IArtworkService` pour toutes les opérations (création, édition, suppression, etc.). Il en va de même pour les catégories et expositions.
+
 ### Utilisation de LINQ
 LINQ (Language Integrated Query) est utilisé pour interroger, filtrer, trier et transformer les données provenant de la base via Entity Framework Core. Cela permet d’écrire des requêtes expressives, sûres et performantes, tout en gardant le code lisible et maintenable.
 

@@ -4,19 +4,20 @@ using Microsoft.EntityFrameworkCore;
 using ArtGallery.Data;
 using ArtGallery.Models;
 using System.Threading.Tasks;
+using ArtGallery.Services;
 
 namespace ArtGallery.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private readonly ApplicationDbContext _context;
+    private readonly IHomeService _homeService;
 
-        // Constructeur : injection du logger et du contexte de base de données
-    public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
+    // Constructeur : injection du logger et du service
+    public HomeController(ILogger<HomeController> logger, IHomeService homeService)
     {
         _logger = logger;
-        _context = context;
+        _homeService = homeService;
     }
 
         /// <summary>
@@ -24,38 +25,7 @@ public class HomeController : Controller
     /// </summary>
     public async Task<IActionResult> Index()
     {
-        var viewModel = new HomeViewModel
-        {
-            FeaturedArtworks = await _context.Artworks
-                .Include(a => a.Categories)
-                .Include(a => a.Images)
-                .Where(a => a.IsFeatured && a.IsAvailable)
-                .OrderByDescending(a => a.CreatedAt)
-                .ToListAsync(),
-
-            ForSaleArtworks = await _context.Artworks
-                .Include(a => a.Categories)
-                .Include(a => a.Images)
-                .Where(a => a.IsForSale && a.IsAvailable)
-                .OrderByDescending(a => a.CreatedAt)
-                .ToListAsync(),
-
-            AvailableArtworks = await _context.Artworks
-                .Include(a => a.Categories)
-                .Include(a => a.Images)
-                .Where(a => a.IsAvailable)
-                .OrderByDescending(a => a.CreatedAt)
-                .ToListAsync(),
-
-            LatestExhibitions = await _context.Exhibitions
-                .Include(e => e.ExhibitionArtworks)
-                .ThenInclude(ea => ea.Artwork)
-                .Where(e => e.IsActive && e.EndDate >= DateTime.Now)
-                .OrderBy(e => e.StartDate)
-                .Take(3)
-                .ToListAsync()
-        };
-
+        var viewModel = await _homeService.GetHomeViewModelAsync();
         return View(viewModel);
     }
 

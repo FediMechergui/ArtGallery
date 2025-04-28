@@ -107,10 +107,11 @@ else
     ViewData["Title"] = "Œuvres";
 }
 
-<h2>Œuvres</h2>
+
 
 @if (User.IsInRole("Admin"))
 {
+    <h2>Vos Œuvres</h2>
     <p>
         <a asp-action="Create" class="btn btn-primary">Créer une œuvre</a>
     </p>
@@ -120,8 +121,9 @@ else
 {
     <div class="alert alert-info">Aucune œuvre trouvée.</div>
 }
-else
+@if (User.IsInRole("Admin"))
 {
+    
     <table class="table table-striped">
         <thead>
             <tr>

@@ -60,7 +60,7 @@
 
                         <div class="mb-3">
                             <label asp-for="CreationDate" class="form-label"></label>
-                            <input asp-for="CreationDate" class="form-control" type="date" />
+                            <input asp-for="CreationDate" class="form-control" type="date" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
                             <span asp-validation-for="CreationDate" class="text-danger"></span>
                         </div>
 
